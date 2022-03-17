@@ -55,7 +55,7 @@
                                         <field name="partner_name"/>
                                         <label for="street" string="Address"/>
                                         <div class="o_address_format">
-                                            <field name="street" id="street_page_lead" placeholder="Street..." class="o_address_street"/>
+                                            <field name="street" placeholder="Street..." class="o_address_street"/>
                                             <field name="street2" placeholder="Street 2..." class="o_address_street"/>
                                             <field name="city" placeholder="City" class="o_address_city"/>
                                             <field name="state_id" class="o_address_state" placeholder="State" options='{"no_open": True}'/>
