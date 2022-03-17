@@ -71,7 +71,7 @@
                                 <field name="residential_address" attrs="{'required':[('is_accepted','=',True)]}"/>
                                 <field name="current_residential_address" attrs="{'required':[('is_accepted','=',True)]}"/>
                                 <field name="national_address" />
-                                <!--<field name="street" />-->
+                                
                                 <field name="po_box" />
                                 <field name="zip_code" />
                                 <field name="attachment_files" attrs="{'required':[('is_accepted','=',True)]}"/>
