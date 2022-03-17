@@ -80,6 +80,7 @@ class InheritCRM(models.Model):
     is_accepted = fields.Boolean(default=False)
     is_rejected = fields.Boolean(default=False)
     reject_reason = fields.Char('Reject Reason')
+    street_page_lead = fields.Char()
     operation_state = fields.Selection([('received','Received'),('reviewed','Reviewed'),('approved','Approved'),('rejected','Rejected')], default='received')
 
     def button_reviewed(self):

@@ -11,7 +11,7 @@
     'depends': ['base','crm'],
     'data': [
 		    'security/ir.model.access.csv',
-            
+            'views/operation_view.xml',
             'views/views.xml',
     ],
     'demo': [],

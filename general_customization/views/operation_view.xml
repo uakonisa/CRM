@@ -246,7 +246,7 @@
                                 <group>
                                     <group string="Contact Information">
                                         <field name="partner_name"/>
-                                        <label for="street" string="Address"/>
+                                        <label for="street_page_lead" string="Address"/>
                                         <div class="o_address_format">
                                             <field name="street" id="street_page_lead" placeholder="Street..." class="o_address_street"/>
                                             <field name="street2" placeholder="Street 2..." class="o_address_street"/>
