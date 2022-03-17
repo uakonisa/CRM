@@ -29,7 +29,7 @@
         </record>
 
         <record model="ir.ui.view" id="crm_custom_view_new_test">
-            <field name="name">crm.view.inherit.sit</field>
+            <field name="name">crm.view.inherit.si</field>
             <field name="model">crm.lead</field>
             <field name="inherit_id" ref="crm.crm_lead_view_form"/>
             <field name="arch" type="xml">
@@ -48,52 +48,7 @@
                 <xpath expr="//field[@name='user_id']" position="attributes">
                     <attribute name="attrs">{'required':[('is_reviewed','=',True)]}</attribute>
                 </xpath>
-                <xpath expr="//notebook" position='inside'>
-                     <page name="lead_xx" string="Extra Information" invisible="1">
-                                <group>
-                                    <group string="Contact Information">
-                                        <field name="partner_name"/>
-                                        <label for="street" string="Address"/>
-                                        <div class="o_address_format">
-                                            <field name="street" placeholder="Street..." class="o_address_street"/>
-                                            <field name="street2" placeholder="Street 2..." class="o_address_street"/>
-                                            <field name="city" placeholder="City" class="o_address_city"/>
-                                            <field name="state_id" class="o_address_state" placeholder="State" options='{"no_open": True}'/>
-                                            <field name="zip" placeholder="ZIP" class="o_address_zip"/>
-                                            <field name="country_id" placeholder="Country" class="o_address_country" options='{"no_open": True, "no_create": True}'/>
-                                        </div>
-                                        <field name="website" widget="url" placeholder="e.g. https://www.odoo.com"/>
-                                        <field name="lang_id" options="{'no_create': True}"/>
-                                    </group>
-                                    <group class="mt48">
-                                        <label for="contact_name_page_lead"/>
-                                        <div class="o_row">
-                                            <field name="contact_name" id="contact_name_page_lead"/>
-                                            <field name="title" placeholder="Title" domain="[]" options='{"no_open": True}'/>
-                                        </div>
-                                        <field name="function"/>
-                                        <label for="mobile_page_lead" class="oe_inline"/>
-                                        <div class="o_row o_row_readonly">
-                                            <button name="phone_action_blacklist_remove" class="fa fa-ban text-danger"
-                                                    title="This phone number is blacklisted for SMS Marketing. Click to unblacklist."
-                                                    type="object" context="{'default_phone': mobile}" groups="base.group_user"
-                                                    attrs="{'invisible': [('mobile_blacklisted', '=', False)]}"/>
-                                            <field name="mobile" id="mobile_page_lead" widget="phone"/>
-                                        </div>
-                                    </group>
-                                    <group string="Marketing">
-                                        <field name="campaign_id" />
-                                        <field name="medium_id" />
-                                        <field name="source_id" />
-                                    </group>
-                                    <group string="Misc" name="Misc">
-                                        <field name="day_open" groups="base.group_no_one"/>
-                                        <field name="day_close" groups="base.group_no_one"/>
-                                        <field name="referred"/>
-                                        <field name="type" invisible="1"/>
-                                    </group>
-                                </group>
-                            </page>
+                <xpath expr="//page[@name='lead']" position='after'>
                     <page string="Contract Information" attrs="{'invisible':[('is_accepted','=',False)]}">
                         <group>
                             <group string="Personal Information">
@@ -116,7 +71,7 @@
                                 <field name="residential_address" attrs="{'required':[('is_accepted','=',True)]}"/>
                                 <field name="current_residential_address" attrs="{'required':[('is_accepted','=',True)]}"/>
                                 <field name="national_address" />
-                                <field name="street" />
+                                <!--<field name="street" />-->
                                 <field name="po_box" />
                                 <field name="zip_code" />
                                 <field name="attachment_files" attrs="{'required':[('is_accepted','=',True)]}"/>
