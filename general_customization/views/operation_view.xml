@@ -1,0 +1,525 @@
+<odoo>
+    <data>
+
+        <!--Reject wizard-->
+
+        <record id="view_crm_reject_wiz" model="ir.ui.view">
+            <field name="name">request.view.reject</field>
+            <field name="model">request.reject</field>
+            <field name="arch" type="xml">
+                <form string="Reject Reason">
+                    <field name="reason_for_rejection" />
+                    <footer>
+                        <button name="submit_reason" type="object" string="Submit"
+                                class="oe_highlight" />
+                        <button string="Cancel" class="oe_link" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <!-- Action for rejection of -->
+
+        <record id="action_reject_crm_lead"
+                model="ir.actions.act_window">
+            <field name="name">Reject Reason</field>
+            <field name="res_model">request.reject</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+
+
+        <!--Report wizard-->
+        <record id="crm_operation_view_form" model="ir.ui.view">
+            <field name="name">crm.lead.form.custom</field>
+            <field name="model">crm.lead</field>
+            <field name="arch" type="xml">
+                <form class="o_lead_opportunity_form" js_class="crm_form">
+                    <header>
+                        <button name="button_reviewed" type="object" string="Review" class="oe_highlight" attrs="{'invisible':[('operation_state','!=','received')]}"/>
+                        <button name="button_approved" type="object" string="Approve" class="oe_highlight" attrs="{'invisible':[('operation_state','!=','reviewed')]}"/>
+                        <button name="%(action_reject_crm_lead)d" type="action" string="Reject" attrs="{'invisible':[('operation_state','=','rejected')]}" />
+                        <field name="operation_state" widget="statusbar" statusbar_visible="received,reviewed,approved,rejected"/>
+                    </header>
+                    <div class="text-center alert alert-primary oe_edit_only" role="alert" attrs="{'invisible': ['|', ('ribbon_message', '=', False), ('ribbon_message', '=', '')]}">
+                        <field name="ribbon_message"/>
+                    </div>
+                    <sheet>
+                        <field name="active" invisible="1"/>
+                        <div class="oe_button_box" name="button_box">
+                            <button name="action_schedule_meeting" type="object"
+                                    class="oe_stat_button" icon="fa-calendar"
+                                    context="{'partner_id': partner_id}"
+                                    attrs="{'invisible': [('type', '=', 'lead')]}">
+                                <div class="o_stat_info">
+                                    <field name="meeting_count" class="o_stat_value"/>
+                                    <span class="o_stat_text" attrs="{'invisible': [('meeting_count', '&lt;', 2)]}"> Meetings</span>
+                                    <span class="o_stat_text" attrs="{'invisible': [('meeting_count', '&gt;', 1)]}"> Meeting</span>
+                                </div>
+                            </button>
+                        </div>
+                        <widget name="web_ribbon" title="Lost" bg_color="bg-danger" attrs="{'invisible': ['|', ('probability', '&gt;', 0), ('active', '=', True)]}"/>
+                        <widget name="web_ribbon" title="Won" attrs="{'invisible': [('probability', '&lt;', 100)]}" />
+                        <div class="oe_title">
+                            <label for="name" class="oe_edit_only" string="Lead" attrs="{'invisible': [('type', '=', 'opportunity')]}"/>
+                            <label for="name" class="oe_edit_only" attrs="{'invisible': [('type', '=', 'lead')]}"/>
+                            <h1><field name="name" placeholder="e.g. Product Pricing"/></h1>
+                            <h2 class="o_row no-gutters align-items-end">
+                                <div class="col" attrs="{'invisible': [('type', '=', 'lead')]}">
+                                    <label for="expected_revenue" class="oe_edit_only" />
+                                    <div class="o_row">
+                                        <field name="company_currency" invisible="1"/>
+                                        <field name="expected_revenue" class="oe_inline" widget='monetary' options="{'currency_field': 'company_currency'}"/>
+                                        <span class="oe_grey p-2" groups="crm.group_use_recurring_revenues"> + </span>
+                                        <span class="oe_grey p-2" groups="!crm.group_use_recurring_revenues"> at </span>
+                                    </div>
+                                </div>
+                                <div class="col" attrs="{'invisible': [('type', '=', 'lead')]}" groups="crm.group_use_recurring_revenues">
+                                    <div class="o_row">
+                                        <field name="recurring_revenue" class="pr-2 oe_inline" widget="monetary" options="{'currency_field': 'company_currency'}"/>
+                                    </div>
+                                </div>
+                                <div class="col" attrs="{'invisible': [('type', '=', 'lead')]}" groups="crm.group_use_recurring_revenues">
+                                    <div class="o_row">
+                                        <field name="recurring_plan" class="oe_inline" placeholder="E.g. Monthly"
+                                               attrs="{'required': [('recurring_revenue', '!=', 0)]}" options="{'no_create': True, 'no_open': True}"/>
+                                        <span class="oe_grey p-2"> at </span>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="oe_edit_only d-flex align-items-center">
+                                        <label for="probability"/>
+                                        <button class="btn btn-link" name="action_set_automated_probability" type="object"
+                                                attrs="{'invisible': [('is_automated_probability', '=', True)]}">
+                                            <i class="fa fa-gear" role="img" title="Switch to automatic probability" aria-label="Switch to automatic probability"></i>
+                                        </button>
+                                        <small class="oe_grey h6 mb0" attrs="{'invisible': [('is_automated_probability', '=', True)]}">
+                                            <field class="mb0" name="automated_probability" force_save="1"/> %%
+                                        </small>
+                                    </div>
+                                    <div id="probability" class="o_row d-flex">
+                                        <field name="is_automated_probability" invisible="1"/>
+                                        <field name="probability" widget="float" class="oe_inline"/>
+                                        <span class="oe_grey"> %%</span>
+                                    </div>
+                                </div>
+                            </h2>
+                        </div>
+                        <group>
+                            <group name="lead_partner" attrs="{'invisible': [('type', '=', 'opportunity')]}">
+                                <!-- Preload all the partner's information -->
+                                <field name="partner_id" widget="res_partner_many2one" groups="base.group_no_one"/>
+                                <field name="partner_name"/>
+                                <label for="street" string="Address"/>
+                                <div class="o_address_format">
+                                    <field name="street" placeholder="Street..." class="o_address_street"/>
+                                    <field name="street2" placeholder="Street 2..." class="o_address_street"/>
+                                    <field name="city" placeholder="City" class="o_address_city"/>
+                                    <field name="state_id" class="o_address_state" placeholder="State" options='{"no_open": True}'/>
+                                    <field name="zip" placeholder="ZIP" class="o_address_zip"/>
+                                    <field name="country_id" placeholder="Country" class="o_address_country" options='{"no_open": True, "no_create": True}'/>
+                                </div>
+                                <field name="website" widget="url" placeholder="e.g. https://www.odoo.com"/>
+                                <field name="lang_id"/>
+                            </group>
+
+                            <group name="opportunity_partner" attrs="{'invisible': [('type', '=', 'lead')]}">
+                                <field name="partner_id"
+                                       widget="res_partner_many2one"
+                                       string="Customer" />
+                                <field name="is_blacklisted" invisible="1"/>
+                                <field name="partner_is_blacklisted" invisible="1"/>
+                                <field name="phone_blacklisted" invisible="1"/>
+                                <field name="mobile_blacklisted" invisible="1"/>
+                                <field name="email_state" invisible="1"/>
+                                <field name="phone_state" invisible="1"/>
+                                <label for="email_from" class="oe_inline"/>
+                                <div class="o_row o_row_readonly">
+                                    <button name="mail_action_blacklist_remove" class="fa fa-ban text-danger"
+                                            title="This email is blacklisted for mass mailings. Click to unblacklist."
+                                            type="object" context="{'default_email': email_from}" groups="base.group_user"
+                                            attrs="{'invisible': [('is_blacklisted', '=', False)]}"/>
+                                    <field name="email_from" string="Email" widget="email"/>
+                                </div>
+                                <label for="phone" class="oe_inline"/>
+                                <div class="o_row o_row_readonly">
+                                    <button name="phone_action_blacklist_remove" class="fa fa-ban text-danger"
+                                            title="This phone number is blacklisted for SMS Marketing. Click to unblacklist."
+                                            type="object" context="{'default_phone': phone}" groups="base.group_user"
+                                            attrs="{'invisible': [('phone_blacklisted', '=', False)]}"/>
+                                    <field name="phone" widget="phone"/>
+                                </div>
+                            </group>
+                            <group name="lead_info" attrs="{'invisible': [('type', '=', 'opportunity')]}">
+                                <label for="contact_name"/>
+                                <div class="o_row">
+                                    <field name="contact_name"/>
+                                    <field name="title" placeholder="Title" domain="[]" options='{"no_open": True}'/>
+                                </div>
+                                <field name="is_blacklisted" invisible="1"/>
+                                <field name="phone_blacklisted" invisible="1"/>
+                                <field name="email_state" invisible="1"/>
+                                <field name="phone_state" invisible="1"/>
+                                <label for="email_from_group_lead_info" class="oe_inline"/>
+                                <div class="o_row o_row_readonly">
+                                    <button name="mail_action_blacklist_remove" class="fa fa-ban text-danger"
+                                            title="This email is blacklisted for mass mailings. Click to unblacklist."
+                                            type="object" context="{'default_email': email_from}" groups="base.group_user"
+                                            attrs="{'invisible': [('is_blacklisted', '=', False)]}"/>
+                                    <field name="email_from" id="email_from_group_lead_info" string="Email" widget="email"/>
+                                </div>
+                                <field name="email_cc" groups="base.group_no_one"/>
+                                <field name="function"/>
+                                <label for="phone_group_lead_info" class="oe_inline"/>
+                                <div class="o_row o_row_readonly">
+                                    <button name="phone_action_blacklist_remove" class="fa fa-ban text-danger"
+                                            title="This phone number is blacklisted for SMS Marketing. Click to unblacklist."
+                                            type="object" context="{'default_phone': phone}" groups="base.group_user"
+                                            attrs="{'invisible': [('phone_blacklisted', '=', False)]}"/>
+                                    <field name="phone" id="phone_group_lead_info" widget="phone"/>
+                                </div>
+                                <label for="mobile" class="oe_inline"/>
+                                <div class="o_row o_row_readonly">
+                                    <button name="phone_action_blacklist_remove" class="fa fa-ban text-danger"
+                                            title="This phone number is blacklisted for SMS Marketing. Click to unblacklist."
+                                            type="object" context="{'default_phone': mobile}" groups="base.group_user"
+                                            attrs="{'invisible': [('mobile_blacklisted', '=', False)]}"/>
+                                    <field name="mobile" widget="phone" string="Mobile"/>
+                                </div>
+                            </group>
+                            <group attrs="{'invisible': [('type', '=', 'lead')]}">
+                                <field name="date_deadline"/>
+                                <field name="priority" widget="priority"/>
+                                <field name="tag_ids" widget="many2many_tags" options="{'color_field': 'color', 'no_create_edit': True}"/>
+                            </group>
+                            <group>
+                                <field name="user_id" domain="[('share', '=', False)]"
+                                       context="{'default_sales_team_id': team_id}" widget="many2one_avatar_user"/>
+                                <field name="team_id" widget="selection"
+                                       domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]"/>
+                                <field name="is_reviewed" invisible="1"/>
+                                <field name="is_allocated" invisible="1"/>
+                                <field name="is_accepted" invisible="1"/>
+                                <field name="additional_service" widget="radio" attrs="{'invisible':[('is_allocated','=',False)]}"/>
+                                <field name="exchange_card" string="Exchange Card" attrs="{'invisible':[('additional_service','=','no')]}" />
+                                <field name="consumer_loan" string="Consumer Loan" attrs="{'invisible':[('additional_service','=','no')]}" />
+                                <field name="vehicle" string="Vehicle" attrs="{'invisible':[('additional_service','=','no')]}" />
+                                <field name="insurance" string="Insurance" attrs="{'invisible':[('additional_service','=','no')]}" />
+                                <field name="type" invisible="1"/>
+                            </group>
+                            <group name="lead_priority" attrs="{'invisible': [('type', '=', 'opportunity')]}">
+                                <field name="priority" widget="priority"/>
+                                <field name="tag_ids" widget="many2many_tags" options="{'color_field': 'color', 'no_create_edit': True}"/>
+                            </group>
+                            <group name="opportunity_info" attrs="{'invisible': [('type', '=', 'lead')]}">
+                                <field name="lost_reason" attrs="{'invisible': [('active', '=', True)]}"/>
+                                <field name="date_conversion" invisible="1"/>
+                                <field name="company_id" groups="base.group_multi_company"/>
+                            </group>
+                        </group>
+
+                        <notebook>
+                            <page string="Internal Notes" name="internal_notes">
+                                <field name="description" placeholder="Add a description..."/>
+                            </page>
+                            <page name="extra" string="Extra Info" attrs="{'invisible': [('type', '=', 'opportunity')]}">
+                                <group>
+                                    <group string="Email" groups="base.group_no_one">
+                                        <field name="message_bounce" readonly="1"/>
+                                    </group>
+                                    <group string="Tracking" name="categorization">
+                                        <field name="company_id"
+                                               groups="base.group_multi_company"
+                                               options="{'no_create': True}"/>
+                                        <field name="campaign_id" />
+                                        <field name="medium_id"/>
+                                        <field name="source_id"/>
+                                        <field name="referred"/>
+                                    </group>
+                                    <group string="Analysis">
+                                        <field name="date_open"/>
+                                        <field name="date_closed"/>
+                                    </group>
+                                </group>
+                            </page>
+                            <page name="lead" string="Extra Information" attrs="{'invisible': [('type', '=', 'lead')]}">
+                                <group>
+                                    <group string="Contact Information">
+                                        <field name="partner_name"/>
+                                        <label for="street" string="Address"/>
+                                        <div class="o_address_format">
+                                            <field name="street" id="street_page_lead" placeholder="Street..." class="o_address_street"/>
+                                            <field name="street2" placeholder="Street 2..." class="o_address_street"/>
+                                            <field name="city" placeholder="City" class="o_address_city"/>
+                                            <field name="state_id" class="o_address_state" placeholder="State" options='{"no_open": True}'/>
+                                            <field name="zip" placeholder="ZIP" class="o_address_zip"/>
+                                            <field name="country_id" placeholder="Country" class="o_address_country" options='{"no_open": True, "no_create": True}'/>
+                                        </div>
+                                        <field name="website" widget="url" placeholder="e.g. https://www.odoo.com"/>
+                                        <field name="lang_id" options="{'no_create': True}"/>
+                                    </group>
+                                    <group class="mt48">
+                                        <label for="contact_name_page_lead"/>
+                                        <div class="o_row">
+                                            <field name="contact_name" id="contact_name_page_lead"/>
+                                            <field name="title" placeholder="Title" domain="[]" options='{"no_open": True}'/>
+                                        </div>
+                                        <field name="function"/>
+                                        <label for="mobile_page_lead" class="oe_inline"/>
+                                        <div class="o_row o_row_readonly">
+                                            <button name="phone_action_blacklist_remove" class="fa fa-ban text-danger"
+                                                    title="This phone number is blacklisted for SMS Marketing. Click to unblacklist."
+                                                    type="object" context="{'default_phone': mobile}" groups="base.group_user"
+                                                    attrs="{'invisible': [('mobile_blacklisted', '=', False)]}"/>
+                                            <field name="mobile" id="mobile_page_lead" widget="phone"/>
+                                        </div>
+                                    </group>
+                                    <group string="Marketing">
+                                        <field name="campaign_id" />
+                                        <field name="medium_id" />
+                                        <field name="source_id" />
+                                    </group>
+                                    <group string="Misc" name="Misc">
+                                        <field name="day_open" groups="base.group_no_one"/>
+                                        <field name="day_close" groups="base.group_no_one"/>
+                                        <field name="referred"/>
+                                        <field name="type" invisible="1"/>
+                                    </group>
+                                </group>
+                            </page>
+                            <page string="Contract Information" attrs="{'invisible':[('is_accepted','=',False)]}">
+                                <group>
+                                    <group string="Personal Information">
+                                        <field name="applicant_name" attrs="{'required':[('is_accepted','=',True)]}"/>
+                                        <field name="account_no" attrs="{'required':[('is_accepted','=',True)]}"/>
+                                        <field name="email_con" attrs="{'required':[('is_accepted','=',True)]}"/>
+                                        <field name="mobile_con" attrs="{'required':[('is_accepted','=',True)]}"/>
+                                        <field name="nationality" attrs="{'required':[('is_accepted','=',True)]}"/>
+                                        <field name="nationality_type" />
+                                        <field name="emergency_contact"/>
+                                        <field name="identification_no" attrs="{'required':[('is_accepted','=',True)]}"/>
+                                        <field name="gender"/>
+                                        <field name="birthday" string="Date of Birth" attrs="{'required':[('is_accepted','=',True)]}"/>
+                                        <field name="age"/>
+                                        <field name="country_of_birth"/>
+                                        <field name="place_of_birth"/>
+                                        <field name="language"/>
+                                    </group>
+                                    <group string="Address Details">
+                                        <field name="residential_address" attrs="{'required':[('is_accepted','=',True)]}"/>
+                                        <field name="current_residential_address" attrs="{'required':[('is_accepted','=',True)]}"/>
+                                        <field name="national_address" />
+                                        <field name="street" />
+                                        <field name="po_box" />
+                                        <field name="zip_code" />
+                                        <field name="attachment_files" attrs="{'required':[('is_accepted','=',True)]}"/>
+                                    </group>
+                                </group>
+                            </page>
+                            <page string="Exchange Card Information" attrs="{'invisible':[('exchange_card','=',False)]}">
+                                <group>
+                                    <group string="Personal Detail">
+                                        <field name="applicant_name" attrs="{'required':[('exchange_card','=',True)]}"/>
+                                        <field name="father_name" attrs="{'required':[('exchange_card','=',True)]}"/>
+                                        <field name="email_con" attrs="{'required':[('exchange_card','=',True)]}"/>
+                                        <field name="mobile_con" attrs="{'required':[('exchange_card','=',True)]}"/>
+                                        <field name="profession_abroad" />
+                                        <field name="nationality" />
+                                        <field name="national_id" attrs="{'required':[('exchange_card','=',True)]}"/>
+                                        <field name="passport_no" attrs="{'required':[('exchange_card','=',True)]}"/>
+                                        <field name="passport_expiry" attrs="{'required':[('exchange_card','=',True)]}"/>
+                                        <field name="current_residential_address" attrs="{'required':[('exchange_card','=',True)]}" />
+                                        <field name="address_in_home_country" attrs="{'required':[('exchange_card','=',True)]}" />
+                                    </group>
+                                    <group string="Attachments">
+                                        <field name="ec_attachments" attrs="{'required':[('exchange_card','=',True)]}">
+                                            <tree editable="bottom">
+                                                <field name="name" />
+                                                <field name="file" />
+                                            </tree>
+                                        </field>
+                                    </group>
+                                </group>
+                            </page>
+                            <page string="Consumer Loan" attrs="{'invisible':[('consumer_loan','=',False)]}">
+                                <group>
+                                    <group>
+                                        <field name="applicant_name" attrs="{'required':[('consumer_loan','=',True)]}"/>
+                                        <field name="email_con" attrs="{'required':[('consumer_loan','=',True)]}"/>
+                                        <field name="mobile_con" attrs="{'required':[('consumer_loan','=',True)]}"/>
+                                        <field name="nationality" />
+                                        <field name="national_id" attrs="{'required':[('consumer_loan','=',True)]}"/>
+                                        <field name="martial_status"/>
+                                        <field name="no_of_dependent" attrs="{'invisible':[('martial_status','=','single')],'required':[('martial_status','=','married')]}"/>
+                                        <field name="degree_level" string="Qualification"/>
+                                    </group>
+                                    <group>
+                                        <field name="loan_purpose" attrs="{'required':[('consumer_loan','=',True)]}"/>
+                                        <field name="loan_amount" attrs="{'required':[('consumer_loan','=',True)]}"/>
+                                        <field name="employment_status" attrs="{'required':[('consumer_loan','=',True)]}"/>
+                                        <field name="organization_name" attrs="{'invisible':[('employment_status','=','unemployed')]}"/>
+                                        <field name="occupation" attrs="{'invisible':[('employment_status','=','unemployed')]}"/>
+                                        <field name="monthly_income" attrs="{'invisible':[('employment_status','=','unemployed')]}"/>
+                                        <field name="service_duration" attrs="{'invisible':[('employment_status','=','unemployed')]}"/>
+                                    </group>
+                                </group>
+                                <group>
+                                    <group string="Attachments">
+                                        <field name="ec_attachments" attrs="{'required':[('consumer_loan','=',True)]}">
+                                            <tree editable="bottom">
+                                                <field name="name" />
+                                                <field name="file" />
+                                            </tree>
+                                        </field>
+                                    </group>
+                                    <group>
+                                    </group>
+                                </group>
+                            </page>
+                            <page string="Vehicle Information" attrs="{'invisible':[('vehicle','=',False)]}">
+                                <group>
+                                    <group>
+                                        <field name="applicant_name" attrs="{'required':[('vehicle','=',True)]}"/>
+                                        <field name="email_con" attrs="{'required':[('vehicle','=',True)]}"/>
+                                        <field name="mobile_con" attrs="{'required':[('vehicle','=',True)]}"/>
+                                        <field name="nationality" />
+                                        <field name="national_id" attrs="{'required':[('vehicle','=',True)]}"/>
+                                    </group>
+                                    <group>
+                                        <field name="vehicle_type" attrs="{'required':[('vehicle','=',True)]}"/>
+                                        <field name="have_license" attrs="{'required':[('vehicle','=',True)]}"/>
+                                        <field name="license_no" attrs="{'invisible':[('have_license','=',False)]}"/>
+                                        <field name="license_expiry" attrs="{'invisible':[('have_license','=',False)]}"/>
+                                    </group>
+                                </group>
+                                <group>
+                                    <group string="Attachments">
+                                        <field name="ec_attachments" attrs="{'required':[('consumer_loan','=',True)]}">
+                                            <tree editable="bottom">
+                                                <field name="name" />
+                                                <field name="file" />
+                                            </tree>
+                                        </field>
+                                    </group>
+                                    <group>
+                                    </group>
+                                </group>
+                            </page>
+                            <page string="Insurance Information" attrs="{'invisible':[('insurance','=',False)]}">
+                                <group>
+                                    <group>
+                                        <field name="applicant_name" attrs="{'required':[('insurance','=',True)]}"/>
+                                        <field name="email_con" attrs="{'required':[('insurance','=',True)]}"/>
+                                        <field name="mobile_con" attrs="{'required':[('insurance','=',True)]}"/>
+                                        <field name="nationality" />
+                                        <field name="national_id" attrs="{'required':[('insurance','=',True)]}"/>
+                                        <field name="martial_status"/>
+                                        <field name="no_of_dependent" attrs="{'invisible':[('martial_status','=','single')],'required':[('martial_status','=','married')]}"/>
+                                        <field name="degree_level" string="Qualification"/>
+                                    </group>
+                                    <group>
+                                        <field name="loan_purpose" attrs="{'required':[('insurance','=',True)]}"/>
+                                        <field name="loan_amount" attrs="{'required':[('insurance','=',True)]}"/>
+                                        <field name="employment_status" attrs="{'required':[('insurance','=',True)]}"/>
+                                        <field name="organization_name" attrs="{'invisible':[('employment_status','=','unemployed')]}"/>
+                                        <field name="occupation" attrs="{'invisible':[('employment_status','=','unemployed')]}"/>
+                                        <field name="monthly_income" attrs="{'invisible':[('employment_status','=','unemployed')]}"/>
+                                        <field name="service_duration" attrs="{'invisible':[('employment_status','=','unemployed')]}"/>
+                                    </group>
+                                </group>
+                                <group>
+                                    <group string="Attachments">
+                                        <field name="ec_attachments" attrs="{'required':[('consumer_loan','=',True)]}">
+                                            <tree editable="bottom">
+                                                <field name="name" />
+                                                <field name="file" />
+                                            </tree>
+                                        </field>
+                                    </group>
+                                    <group>
+                                    </group>
+                                </group>
+                            </page>
+                        </notebook>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids"/>
+                        <field name="activity_ids"/>
+                        <field name="message_ids" options="{'post_refresh': 'recipients'}"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <record id="crm_operation_view_tree" model="ir.ui.view">
+            <field name="name">crm.lead.tree.custom</field>
+            <field name="model">crm.lead</field>
+            <!--<field name="priority">1</field>-->
+            <field name="arch" type="xml">
+                <tree string="Opportunities" sample="1" multi_edit="1">
+                    <field name="date_deadline" invisible="1"/>
+                    <field name="create_date" optional="hide"/>
+                    <field name="name" string="Opportunity" readonly="1"/>
+                    <field name="partner_id" optional="hide"/>
+                    <field name="contact_name" optional="show"/>
+                    <field name="email_from"/>
+                    <field name="phone" class="o_force_ltr"/>
+                    <field name="company_id" groups="base.group_multi_company" optional="show"/>
+                    <field name="city" optional="hide"/>
+                    <field name="state_id" optional="hide"/>
+                    <field name="country_id" optional="hide"/>
+                    <field name="user_id" widget="many2one_avatar_user" optional="show" domain="[('share', '=', False)]"/>
+                    <field name="team_id" optional="show"/>
+                    <field name="priority" optional="hide"/>
+                    <field name="activity_ids" widget="list_activity"/>
+                    <field name="activity_user_id" optional="hide" string="Activity by" widget="many2one_avatar_user"/>
+                    <field name="activity_date_deadline_my" string="My Deadline" widget="remaining_days" options="{'allow_order': '1'}"/>
+                    <field name="campaign_id" optional="hide"/>
+                    <field name="medium_id" optional="hide"/>
+                    <field name="source_id" optional="hide"/>
+                    <field name="company_currency" invisible="1"/>
+                    <field name="expected_revenue" sum="Expected Revenues" optional="show" widget="monetary" options="{'currency_field': 'company_currency'}"/>
+                    <field name="recurring_revenue_monthly" sum="Expected MRR" optional="show" widget="monetary" options="{'currency_field': 'company_currency'}"/>
+                    <field name="recurring_revenue" sum="Recurring Revenue" optional="hide" widget="monetary" options="{'currency_field': 'company_currency'}"/>
+                    <field name="recurring_plan" optional="hide"/>
+                    <!--<field name="stage_id" optional="show" decoration-bf="1"/>-->
+                    <field name="operation_state" />
+                    <field name="active" invisible="1"/>
+                    <field name="probability" optional="hide"/>
+                    <field name="tag_ids" optional="hide" widget="many2many_tags" options="{'color_field': 'color'}"/>
+                    <field name="referred" invisible="1"/>
+                    <field name="message_needaction" invisible="1"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- Action For CRM Operation Views -->
+        <record id="action_crm_general" model="ir.actions.act_window">
+            <field name="name">Operation Authentications</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">crm.lead</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[('is_allocated','=',True)]</field>
+        </record>
+
+        <!--Action for Tree -->
+        <record id="crm_general_tree_view" model="ir.actions.act_window.view">
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="general_customization.crm_operation_view_tree"/>
+            <field name="act_window_id" ref="general_customization.action_crm_general"/>
+        </record>
+
+        <!--Action For Form-->
+        <record id="crm_general_form_view" model="ir.actions.act_window.view">
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="general_customization.crm_operation_view_form"/>
+            <field name="act_window_id" ref="general_customization.action_crm_general"/>
+        </record>
+
+        <!-- Operation CRM Menu-->
+        <menuitem id="menu_crm_operation" name="Operations"
+                  parent="crm.crm_menu_root" sequence="50"
+                  action="general_customization.action_crm_general"/>
+
+    </data>
+</odoo>
