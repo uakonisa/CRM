@@ -28,8 +28,8 @@
             </field>
         </record>
 
-        <record model="ir.ui.view" id="crm_custom_view">
-            <field name="name">crm.view.inherit</field>
+        <record model="ir.ui.view" id="crm_custom_view_new_test">
+            <field name="name">crm.view.inherit.sit</field>
             <field name="model">crm.lead</field>
             <field name="inherit_id" ref="crm.crm_lead_view_form"/>
             <field name="arch" type="xml">
