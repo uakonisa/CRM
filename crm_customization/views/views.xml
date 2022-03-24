@@ -1,0 +1,187 @@
+<odoo>
+    <data>
+
+        <record model="ir.ui.view" id="crm_custom_view_stage_tree">
+            <field name="name">crm.view.inherit.tree</field>
+            <field name="model">crm.stage</field>
+            <field name="inherit_id" ref="crm.crm_stage_tree"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='is_won']" position="after">
+                    <field name="is_accepted"/>
+                    <field name="is_reviewed"/>
+                    <field name="is_allocate"/>
+                    <field name="is_card" />
+                    <field name="is_rejected"/>
+                </xpath>
+            </field>
+        </record>
+        <record model="ir.ui.view" id="crm_custom_view_stage_form">
+            <field name="name">crm.view.inherit.form.stage</field>
+            <field name="model">crm.stage</field>
+            <field name="inherit_id" ref="crm.crm_stage_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='is_won']" position="after">
+                    <field name="is_accepted"/>
+                    <field name="is_reviewed"/>
+                    <field name="is_allocate"/>
+                    <field name="is_card" />
+                    <field name="is_rejected"/>
+                </xpath>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="crm_custom_view">
+            <field name="name">crm.view.inherit</field>
+            <field name="model">crm.lead</field>
+            <field name="inherit_id" ref="crm.crm_lead_view_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//div[@name='button_box']" position="inside">
+                    <button name="action_open_contact" type="object" string="Contact" class="oe_stat_button" icon="fa-address-book" attrs="{'invisible': [('has_client','=',False)]}"/>
+                    <button name="action_open_request" type="object" string="Application" class="oe_stat_button" icon="fa-navicon" attrs="{'invisible': [('has_client','=',False)]}"/>
+                </xpath>
+                <xpath expr="//header" position="inside">
+                    <button name="submit_operation" string="Submit to Operation" type="object" attrs="{'invisible': [('has_client','=',False)]}" />
+                </xpath>
+                <xpath expr="//field[@name='name']" position="attributes">
+                    <attribute name="string">PP Client name</attribute>
+                </xpath>
+                <xpath expr="//field[@name='team_id']" position="after">
+                    <field name="is_reviewed" invisible="1"/>
+                    <field name="is_service_request" invisible="1"/>
+                    <field name="is_allocated" invisible="1"/>
+                    <field name="is_accepted" invisible="1"/>
+                    <field name="has_info" invisible="1"/>
+                    <field name="has_docs" invisible="1"/>
+                    <field name="has_travel_info" invisible="1" />
+                    <field name="is_rejected" invisible="1"/>
+                    <field name="has_sa" invisible="1"/>
+                    <field name="has_client" invisible="1"/>
+                    <field name="has_application" invisible="1" />
+                    <field name="additional_service" widget="radio" attrs="{'invisible':[('has_sa','=',False)]}"/>
+                    <field name="exchange_card" string="D-Card" attrs="{'invisible':[('additional_service','=','no')]}" />
+                    <field name="consumer_loan" string="Consumer Loan" attrs="{'invisible':[('additional_service','=','no')]}" />
+                    <field name="vehicle" string="Vehicle" attrs="{'invisible':[('additional_service','=','no')]}" />
+                    <field name="insurance" string="Insurance" attrs="{'invisible':[('additional_service','=','no')]}" />
+                    <field name="reject_reason" attrs="{'invisible':[('is_rejected','=',False)]}"/>
+                </xpath>
+                <xpath expr="//field[@name='user_id']" position="attributes">
+                    <attribute name="attrs">{'required':[('is_reviewed','=',True)]}</attribute>
+                </xpath>
+                <xpath expr="//notebook/page[@name='lead']" position='after'>
+                    <page string="Personal Information">
+                        <group>
+                            <group string="Personal Information">
+                                <field name="account_no" required="1" string="In Active Base Number" attrs="{'readonly':[('is_accepted','=',True)]}"/>
+                                <field name="applicant_name" required="1" string="Name" placeholder="Name as per Passport...." attrs="{'readonly':[('is_accepted','=',True)]}"/>
+                                <field name="nationality" string="Nationality" required="1" attrs="{'readonly':[('is_accepted','=',True)]}"/>
+                                <field name="employer_id" string="Employer" required="1" attrs="{'readonly':[('is_accepted','=',True)]}"/>
+                                <field name="passport_no" string="PP Number" required="1" attrs="{'readonly':[('is_accepted','=',True)]}"/>
+                                <field name="passport_expiry" string="Expiry Date" required="1" attrs="{'readonly':[('is_accepted','=',True)]}"/>
+                                <field name="birthday" string="Date of Birth" required="1" attrs="{'readonly':[('is_accepted','=',True)]}"/>
+                                <field name="age"/>
+                                <field name="degree_level" string="Educational Status" required="1" attrs="{'readonly':[('is_accepted','=',True)]}"/>
+                                <field name="martial_status" string="Martial Status" required="1" attrs="{'readonly':[('is_accepted','=',True)]}"/>
+                                <field name="no_of_dependent" attrs="{'invisible':[('martial_status','=','single')],'required':[('martial_status','=','married')],'readonly':[('is_accepted','=',True)]}" />
+                                <field name="email_con" required="1" string="Email Address" attrs="{'readonly':[('is_accepted','=',True)]}"/>
+                                <field name="mobile_con" string="Mobile" attrs="{'readonly':[('is_accepted','=',True)]}"/>
+                            </group>
+                            <group string="Work Address">
+                                <label for="street_work" string="Work Address"/>
+                                <div>
+                                    <div class="o_address_format" name="div_address_work">
+                                        <field name="street_work" required="1" placeholder="Street..." class="o_address_street" attrs="{'readonly':[('is_accepted','=',True)]}"/>
+                                        <field name="street2_work" placeholder="Street 2..." class="o_address_street" attrs="{'readonly':[('is_accepted','=',True)]}"/>
+                                        <field name="city_work" required="1" placeholder="City" class="o_address_city" attrs="{'readonly':[('is_accepted','=',True)]}"/>
+                                        <field name="state_id_work" required="1" class="o_address_state" placeholder="State" options="{'no_open': True, 'no_quick_create': True}" attrs="{'readonly':[('is_accepted','=',True)]}"/>
+                                        <field name="zip_work" placeholder="ZIP" class="o_address_zip" attrs="{'readonly':[('is_accepted','=',True)]}"/>
+                                        <field name="country_id_work" required="1" placeholder="Country" class="o_address_country" options="{&quot;no_open&quot;: True, &quot;no_create&quot;: True}" attrs="{'readonly':[('is_accepted','=',True)]}"/>
+                                    </div>
+                                </div>
+                                <field name="flat_no_work" string="Flat No" required="1" attrs="{'readonly':[('is_accepted','=',True)]}"/>
+                                <field name="building_work" string="Building No" required="1" attrs="{'readonly':[('is_accepted','=',True)]}"/>
+                            </group>
+                        </group>
+                        <group>
+                            <group string="Home Address">
+                                <label for="street_home" string="Home Address"/>
+                                <div>
+                                    <div class="o_address_format" name="div_address_home">
+                                        <field name="street_home" required="1" placeholder="Street..." class="o_address_street" attrs="{'readonly':[('is_accepted','=',True)]}"/>
+                                        <field name="street2_home" placeholder="Street 2..." class="o_address_street" attrs="{'readonly':[('is_accepted','=',True)]}"/>
+                                        <field name="city_home" required="1" placeholder="City" class="o_address_city" attrs="{'readonly':[('is_accepted','=',True)]}"/>
+                                        <field name="state_id_home" required="1" class="o_address_state" placeholder="State" options="{'no_open': True, 'no_quick_create': True}" attrs="{'readonly':[('is_accepted','=',True)]}"/>
+                                        <field name="zip_home" placeholder="ZIP" class="o_address_zip" attrs="{'readonly':[('is_accepted','=',True)]}"/>
+                                        <field name="country_id_home" required="1" placeholder="Country" class="o_address_country" options="{&quot;no_open&quot;: True, &quot;no_create&quot;: True}" attrs="{'readonly':[('is_accepted','=',True)]}"/>
+                                    </div>
+                                </div>
+                                <field name="flat_no_home" string="Flat No" required="1" attrs="{'readonly':[('is_accepted','=',True)]}"/>
+                                <field name="building_home" string="Building No" required="1" attrs="{'readonly':[('is_accepted','=',True)]}"/>
+                            </group>
+                            <group string="Financial Information">
+                                <field name="is_blacklisted" required="1" string="Is Blacklisted?" attrs="{'readonly':[('is_accepted','=',True)]}"/>
+                                <field name="monthly_salary" string="Monthly Salary" required="1" attrs="{'readonly':[('is_accepted','=',True)]}"/>
+                                <field name="other_income" string="Other Income" attrs="{'readonly':[('is_accepted','=',True)]}"/>
+                                <field name="monthly_income" string="Monthly Income" attrs="{'readonly':[('is_accepted','=',True)]}"/>
+                            </group>
+                        </group>
+                        <group>
+                            <h3 style="border: 1px #a24689 solid;border-radius: 5px;padding: 10px;">
+                                <br/>
+                                <strong>This is to confirm, I accept to apply for an account, the credit card with your company, and above information correct and accurate.</strong><br/><br/>
+                            </h3>
+                            <h2>
+                                <strong>Digital Signature:</strong><br/>
+                            </h2>
+                        </group>
+                        <button name="proceed_request" string="Proceed" type="object" class="oe_highlight" />
+                    </page>
+                    <page string="Documents" attrs="{'invisible':[('has_info','=',False)]}">
+                        <group string="Documents">
+                            <group>
+                                <field name="passport_attachment" attrs="{'required':[('has_info','=',True)],'readonly':[('has_docs','=',True)]}" string="Passport" />
+                            </group>
+                            <group>
+                                <field name="fatch_form_attachment" attrs="{'required':[('has_info','=',True)],'readonly':[('has_docs','=',True)]}" string="FATCA Form" />
+                            </group>
+                        </group>
+                        <button name="proceed_doc_submit" string="Proceed" type="object" class="oe_highlight" />
+                    </page>
+                     <page string="Travel Information" attrs="{'invisible':[('has_docs','=',False)]}">
+                        <group string="Travel Information">
+                            <group>
+                                <field name="dcard_number" attrs="{'required':[('has_docs','=',True)],'readonly':[('has_travel_info','=',True)]}" string="D-Card Number" />
+                                <field name="arrival_time" attrs="{'required':[('has_docs','=',True)],'readonly':[('has_travel_info','=',True)]}" string="Arrival Time" />
+                                <field name="airline_agency" attrs="{'required':[('has_docs','=',True)],'readonly':[('has_travel_info','=',True)]}" string="Airline Agency" />
+                                <field name="flight_reference" attrs="{'required':[('has_docs','=',True)],'readonly':[('has_travel_info','=',True)]}" string="Flight Reference" />
+                                <field name="departure_city" attrs="{'required':[('has_docs','=',True)],'readonly':[('has_travel_info','=',True)]}" string="Departure City" />
+                                <field name="arrival_city" attrs="{'required':[('has_docs','=',True)],'readonly':[('has_travel_info','=',True)]}" string="Arrival City" />
+                            </group>
+                            <group>
+                            </group>
+                        </group>
+                        <button name="proceed_allocation" string="Proceed" type="object" class="oe_highlight" />
+                    </page>
+                     <page string="Sale Agent Information" attrs="{'invisible':[('has_travel_info','=',False)]}">
+                        <group string="Sale Agent Information">
+                            <group>
+                                <field name="sales_agent" attrs="{'required':[('has_travel_info','=',True)],'readonly':[('has_sa','=',True)]}" string="Name" />
+                                <field name="sales_agent_id" attrs="{'required':[('has_travel_info','=',True)],'readonly':[('has_sa','=',True)]}" string="Agent ID" />
+                                <field name="sales_officer" attrs="{'required':[('has_travel_info','=',True)],'readonly':[('has_sa','=',True)]}" string="Sale Officer" />
+                                <field name="sales_department" attrs="{'required':[('has_travel_info','=',True)],'readonly':[('has_sa','=',True)]}" string="Department" />
+                                <field name="sales_deadline" attrs="{'required':[('has_travel_info','=',True)],'readonly':[('has_sa','=',True)]}" string="Deadline" />
+                            </group>
+                            <group string="Attachments">
+                                <field name="digital_signature_attach" attrs="{'required':[('has_travel_info','=',True)],'readonly':[('has_sa','=',True)]}"/>
+                                <field name="account_op_form" attrs="{'required':[('has_travel_info','=',True)],'readonly':[('has_sa','=',True)]}"/>
+                                <field name="dcard_form" attrs="{'required':[('has_travel_info','=',True)],'readonly':[('has_sa','=',True)]}" />
+                                <field name="undertaking_form" attrs="{'required':[('has_travel_info','=',True)],'readonly':[('has_sa','=',True)]}" />
+                            </group>
+                        </group>
+                        <button name="proceed_card_deliver" string="Proceed" type="object" class="oe_highlight" />
+                    </page>
+
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>
