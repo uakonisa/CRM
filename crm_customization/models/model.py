@@ -6,6 +6,12 @@ import datetime
 from datetime import timedelta
 
 
+class InheritEmployee(models.Model):
+    _inherit = 'hr.employee'
+
+    employee_number = fields.Char('Employee Number')
+
+
 class InheritCRMStage(models.Model):
     _inherit = 'crm.stage'
 
@@ -428,8 +434,6 @@ class InheritSaleOrder(models.Model):
 class OperationReq(models.Model):
     _name = 'operation.request'
     name = fields.Char()
-
-
 
 
 

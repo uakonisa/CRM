@@ -8,7 +8,7 @@
     'website': "",
     'category': 'CRM',
     'version': '0.1',
-    'depends': ['base','hr','crm','mail','saudi_hr_employee','sale'],
+    'depends': ['base','hr','crm','mail','sale'],
     'data': ['security/ir.model.access.csv',
              'security/security.xml',
              'data/crm_mail_template.xml',
