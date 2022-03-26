@@ -199,8 +199,8 @@ class InheritCRM(models.Model):
             'name': _('Applications'),
             'view_type': 'form',
             'view_mode': 'tree,form',
+            'view_id': self.env.ref('crm_customization.crm_operation_view_tree').id,
             'res_model': 'sale.order',
-            'view_id': False,
             'type': 'ir.actions.act_window',
             'domain': [('partner_id', '=', self.client_id.id)],
         }
@@ -259,11 +259,21 @@ class InheritSaleOrder(models.Model):
 
     service_type = fields.Selection([('ec','ECard(Wallet)'),('cl','Consumer Loan'),('vehicle','Vehicle Rent'),('insurance','Insurance')], default='')
     reject_reason = fields.Char('Reject Reason', index=True, tracking=True)
-    # state = fields.Selection(selection_add=([('submitted','Submitted'),('reviewed','Reviewed'),
-    #     ('approved','Approved'),('returned','Returned'),('rejected','Rejected'),
-    #     ('cpv_failed','CPV Failed'),('cpv_pending','CPV Pending'),
-    #     ('sent_for_prod','Sent for Production'),('delivered','Delivered'),('pending','Pending Activation')]),string='Status', readonly=True, copy=False, index=True, tracking=3, default='draft')
+    state = fields.Selection([
+        ('draft', 'New'),
+        ('sent', 'Quotation Sent'),
+        ('submitted','Checked'),('reviewed','Reviewed'),
+        ('approved','Approved'),('returned','Returned'),('rejected','Rejected'),
+        ('cpv_failed','CPV Failed'),('cpv_pending','CPV Pending'),
+        ('sent_for_prod','Sent for Production'),('delivered','Delivered'),('pending','Pending Activation'),
+        ('sale', 'Sales Order'),
+        ('done', 'Locked'),
+        ('cancel', 'Cancelled'),
+        ], string='Status', readonly=True, copy=False, index=True, track_visibility='onchange', default='draft')
+
     account_no = fields.Char(string='Account Number', store=True)
+    reviewed_by_tl = fields.Boolean(default=False)
+    reviewed_by_sm = fields.Boolean(default=False)
     applicant_name = fields.Char(string='Applicant Name',store=True)
     passport_no = fields.Char('Present Passport Number')
     employer_id = fields.Many2one('res.partner')

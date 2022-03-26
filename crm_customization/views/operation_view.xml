@@ -38,15 +38,16 @@
             <field name="arch" type="xml">
                 <form>
                     <header>
+                        <button name="button_submit" type="object" string="Checked" class="oe_highlight" attrs="{'invisible':[('state','!=','draft')]}"/>
                         <button name="button_reviewed" type="object" string="Review" class="oe_highlight" attrs="{'invisible':[('state','!=','submitted')]}"/>
-                        <button name="button_submit" type="object" string="Submit" class="oe_highlight" attrs="{'invisible':[('state','!=','draft')]}"/>
-                        <button name="button_reviewed" type="object" string="CPV Failed" class="oe_highlight" attrs="{'invisible':[('state','!=','submitted')]}"/>
-                        <button name="button_cpv_failed" type="object" string="CPV Failed" class="oe_highlight" attrs="{'invisible':[('state','!=','submitted')]}"/>
-                        <button name="button_cpv_pending" type="object" string="CPV Pending" class="oe_highlight" attrs="{'invisible':[('state','!=','submitted')]}"/>
-                        <button name="button_returned" type="object" string="Return" class="oe_highlight" attrs="{'invisible':[('state','!=','submitted')]}"/>
+                        <button name="button_returned" type="object" string="Return" class="oe_highlight" attrs="{'invisible':[('state','!=','reviewed')]}"/>
                         <button name="button_approved" type="object" string="Approve" class="oe_highlight" attrs="{'invisible':[('state','!=','reviewed')]}"/>
+                        <button name="%(action_reject_crm_lead)d" type="action" string="Reject" attrs="{'invisible':[('state','!=','reviewed')]}" />
+                        <button name="button_reviewed" type="object" string="CPV Failed" class="oe_highlight" attrs="{'invisible':[('state','!=','approved')]}"/>
+                        <button name="button_cpv_failed" type="object" string="CPV Failed" class="oe_highlight" attrs="{'invisible':[('state','!=','approved')]}"/>
+                        <button name="button_cpv_pending" type="object" string="CPV Pending" class="oe_highlight" attrs="{'invisible':[('state','!=','approved')]}"/>
                         <button name="button_proceed_production" type="object" string="Proceed to Production" class="oe_highlight" attrs="{'invisible':[('state','!=','approved')]}"/>
-                        <button name="%(action_reject_crm_lead)d" type="action" string="Reject" attrs="{'invisible':[('state','=','rejected')]}" />
+                        <button name="button_delivered" type="object" string="Delivered" class="oe_highlight" attrs="{'invisible':[('state','!=','sent_for_prod')]}"/>
                         <field name="state" widget="statusbar" statusbar_visible="draft,submitted,reviewed,approved,returned,rejected,cpv_failed,cpv_pending,sent_for_prod,delivered,pending"/>
                     </header>
                     <sheet>
@@ -73,6 +74,8 @@
                                 <field name="pick_location" string="Pick up Location" attrs="{'readonly':[('state','!=','draft')],'required':[('state','=','submitted')]}" />
                                 <field name="card_type" string="Card Type" attrs="{'readonly':[('state','!=','draft')],'required':[('state','=','submitted')]}" />
                                 <field name="prepayment_percentage" string="Prepayment Percent" attrs="{'readonly':[('state','!=','draft')],'required':[('state','=','submitted')]}" />
+                                <field name="reviewed_by_tl" string="Reviewed by Team Leader" attrs="{'readonly':[('state','!=','approved')],'required':[('state','=','reviewed')]}"/>
+                                <field name="reviewed_by_sm" string="Reviewed by Sales Manager" attrs="{'readonly':[('state','!=','approved')],'required':[('state','=','reviewed')]}"/>
                             </group>
                         </group>
                         <notebook>
@@ -197,7 +200,7 @@
                                     </group>
                                 </group>
                             </page>
-                            <page string="Sale Agent Information">
+                            <page string="Signed Documents">
                                 <group string="Sale Agent Information">
                                     <group>
                                         <field name="sales_agent" readonly="1"/>
@@ -206,7 +209,7 @@
                                         <field name="sales_department" readonly="1" />
                                         <field name="sales_deadline" readonly="1" />
                                     </group>
-                                    <group string="Attachments">
+                                    <group string="Signed Documents">
                                         <field name="digital_signature_attach" readonly="1"/>
                                         <field name="account_op_form" readonly="1"/>
                                         <field name="dcard_form" readonly="1"/>
@@ -233,8 +236,13 @@
             <field name="arch" type="xml">
                 <tree string="Application" decoration-info="state in ['draft','reviewed']" decoration-danger="state in ['rejected','cpv_failed']" decoration-success="state == 'approved'" edit="false" delete="false">
                     <field name="partner_id" />
-                    <field name="service_type" />
+                    <field name="email_con" />
+                    <field name="mobile_con" />
                     <field name="nationality" />
+                    <field name="employer_id" />
+                    <field name="service_type" />
+                    <field name="sales_agent" />
+                    <field name="sales_officer" />
                     <field name="state" />
                 </tree>
             </field>

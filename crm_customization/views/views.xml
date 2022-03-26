@@ -50,7 +50,7 @@
                     <button name="action_open_request" type="object" string="Application" class="oe_stat_button" icon="fa-navicon" attrs="{'invisible': [('has_client','=',False)]}"/>
                 </xpath>
                 <xpath expr="//header" position="inside">
-                    <button name="submit_operation" string="Submit to Operation" type="object" attrs="{'invisible': [('has_client','=',False)]}" />
+                    <button name="submit_operation" string="Submit to Review" class="oe_highlight" type="object" attrs="{'invisible': [('has_client','=',False)]}" groups="crm_customization.group_team_manager"/>
                 </xpath>
                 <xpath expr="//field[@name='name']" position="attributes">
                     <attribute name="string">PP Client name</attribute>

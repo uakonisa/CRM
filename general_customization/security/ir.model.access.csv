@@ -1,6 +1,0 @@
-id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-view_exchange_card_attaches,exchange.card.attaches,model_exchange_card_attaches,base.group_user,1,1,1,1
-view_consumer_loan_attaches,consumer.loan.attaches,model_consumer_loan_attaches,base.group_user,1,1,1,1
-view_vehicle_attaches,vehicle.attaches,model_vehicle_attaches,base.group_user,1,1,1,1
-view_insurance_attaches,insurance.attaches,model_insurance_attaches,base.group_user,1,1,1,1
-view_request_reject,request.reject,model_request_reject,base.group_user,1,1,1,1
