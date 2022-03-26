@@ -207,7 +207,6 @@ class InheritCRM(models.Model):
             'name': _('Applications'),
             'view_type': 'form',
             'view_mode': 'tree,form',
-            'view_id': self.env.ref('crm_customization.crm_operation_view_tree').id,
             'res_model': 'sale.order',
             'type': 'ir.actions.act_window',
             'domain': [('partner_id', '=', self.client_id.id)],
