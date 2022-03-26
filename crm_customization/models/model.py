@@ -114,7 +114,7 @@ class InheritCRM(models.Model):
     arrival_city = fields.Char(store=True)
     sales_agent = fields.Many2one('hr.employee', string='Sales Agent')
     sales_agent_id = fields.Char(related='sales_agent.employee_number')
-    sales_officer = fields.Many2one(related='sales_agent.supervisor')
+    sales_officer = fields.Many2one(related='sales_agent.parent_id')
     sales_department = fields.Many2one(related='sales_agent.department_id')
     sales_deadline = fields.Date(string='Last Day Month', default=datetime.date.today()+timedelta(days=2))
     digital_signature_attach = fields.Binary('Digital Signature Form')
