@@ -4,14 +4,14 @@
         <report
                 id="action_report_ecard_wallet"
                 model="crm.lead"
-                string="E-Card Form"
+                string="Digital Signature Form"
                 report_type="qweb-pdf"
                 name="crm_customization.report_ecard_form"
                 file="crm_customization.report_ecard_form" />
          <report
                 id="action_report_consumer_loan"
                 model="crm.lead"
-                string="Consumer Loan"
+                string="Account Opening Form"
                 report_type="qweb-pdf"
                 name="crm_customization.report_consumer_loan"
                 file="crm_customization.report_consumer_loan" />
@@ -19,7 +19,7 @@
          <report
                 id="action_report_vehicle_rent"
                 model="crm.lead"
-                string="Vehicle Rent"
+                string="Digital Card Form"
                 report_type="qweb-pdf"
                 name="crm_customization.report_vehicle_rent"
                 file="crm_customization.report_vehicle_rent" />
@@ -27,7 +27,7 @@
          <report
                 id="action_report_insurance"
                 model="crm.lead"
-                string="Insurance"
+                string="Undertaking Letter"
                 report_type="qweb-pdf"
                 name="crm_customization.report_insurance_form"
                 file="crm_customization.report_insurance_form" />

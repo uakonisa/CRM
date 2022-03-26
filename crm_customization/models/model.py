@@ -12,6 +12,14 @@ class EmployeeInherit(models.Model):
     employee_number = fields.Char('Employee Number')
 
 
+class ResPartner(models.Model):
+    _inherit = 'res.partner'
+
+    building_no = fields.Char('Building No')
+    additional_no = fields.Char('Additional No')
+    other_seller_id = fields.Char('Other Seller Id')
+
+
 class InheritCRMStage(models.Model):
     _inherit = 'crm.stage'
 

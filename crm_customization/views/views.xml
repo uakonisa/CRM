@@ -1,5 +1,17 @@
 <odoo>
     <data>
+        <record model="ir.ui.view" id="view_partner_form_etir">
+            <field name="name">tax.invoice.res.partner.inherit</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='vat']" position="after">
+                    <field name="building_no"/>
+                    <field name="additional_no"/>
+                    <field name="other_seller_id"/>
+                </xpath>
+            </field>
+        </record>
         <record model="ir.ui.view" id="employee_view_inherit_sit">
             <field name="name">employee.view.crm</field>
             <field name="model">hr.employee</field>
@@ -156,7 +168,7 @@
                         </group>
                         <button name="proceed_doc_submit" string="Proceed" type="object" class="oe_highlight" />
                     </page>
-                     <page string="Travel Information" attrs="{'invisible':[('has_docs','=',False)]}">
+                    <page string="Travel Information" attrs="{'invisible':[('has_docs','=',False)]}">
                         <group string="Travel Information">
                             <group>
                                 <field name="dcard_number" attrs="{'required':[('has_docs','=',True)],'readonly':[('has_travel_info','=',True)]}" string="D-Card Number" />
@@ -171,7 +183,7 @@
                         </group>
                         <button name="proceed_allocation" string="Proceed" type="object" class="oe_highlight" />
                     </page>
-                     <page string="Sale Agent Information" attrs="{'invisible':[('has_travel_info','=',False)]}">
+                    <page string="Sale Agent Information" attrs="{'invisible':[('has_travel_info','=',False)]}">
                         <group string="Sale Agent Information">
                             <group>
                                 <field name="sales_agent" attrs="{'required':[('has_travel_info','=',True)],'readonly':[('has_sa','=',True)]}" string="Name" />
