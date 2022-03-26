@@ -270,10 +270,10 @@ class InheritSaleOrder(models.Model):
         ('draft', 'New'),
         ('sent', 'Quotation Sent'),
         ('submitted','Checked'),('reviewed','Reviewed'),
-        ('approved','Approved'),('returned','Returned'),('rejected','Rejected'),
+        ('returned','Returned'),('rejected','Rejected'),
         ('cpv_failed','CPV Failed'),('cpv_pending','CPV Pending'),
         ('sent_for_prod','Sent for Production'),('delivered','Delivered'),('pending','Pending Activation'),
-        ('sale', 'Sales Order'),
+        ('sale', 'Approved'),
         ('done', 'Locked'),
         ('cancel', 'Cancelled'),
         ], string='Status', readonly=True, copy=False, index=True, track_visibility='onchange', default='draft')
@@ -346,7 +346,6 @@ class InheritSaleOrder(models.Model):
     def get_personal_data(self):
         if self.partner_id:
             contact = self.env['crm.lead'].search([('client_id','=',self.partner_id.id)])
-            print(contact)
             self.account_no = contact.account_no
             self.applicant_name = contact.applicant_name
             self.nationality = contact.nationality.id
@@ -420,7 +419,7 @@ class InheritSaleOrder(models.Model):
         return self.write({'state': 'delivered'})
 
     def button_approved(self):
-        return self.write({'state':'approved'})
+        return self.write({'state':'sale'})
 
     def button_proceed_production(self):
         users = self.env.ref('crm_customization.group_production_responsible').users

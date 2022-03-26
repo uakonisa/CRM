@@ -43,12 +43,11 @@
                         <button name="button_returned" type="object" string="Return" class="oe_highlight" attrs="{'invisible':[('state','!=','reviewed')]}"/>
                         <button name="button_approved" type="object" string="Approve" class="oe_highlight" attrs="{'invisible':[('state','!=','reviewed')]}"/>
                         <button name="%(action_reject_crm_lead)d" type="action" string="Reject" attrs="{'invisible':[('state','!=','reviewed')]}" />
-                        <button name="button_reviewed" type="object" string="CPV Failed" class="oe_highlight" attrs="{'invisible':[('state','!=','approved')]}"/>
-                        <button name="button_cpv_failed" type="object" string="CPV Failed" class="oe_highlight" attrs="{'invisible':[('state','!=','approved')]}"/>
-                        <button name="button_cpv_pending" type="object" string="CPV Pending" class="oe_highlight" attrs="{'invisible':[('state','!=','approved')]}"/>
-                        <button name="button_proceed_production" type="object" string="Proceed to Production" class="oe_highlight" attrs="{'invisible':[('state','!=','approved')]}"/>
+                        <button name="button_cpv_failed" type="object" string="CPV Failed" class="oe_highlight" attrs="{'invisible':[('state','!=','sale')]}"/>
+                        <button name="button_cpv_pending" type="object" string="CPV Pending" class="oe_highlight" attrs="{'invisible':[('state','!=','sale')]}"/>
+                        <button name="button_proceed_production" type="object" string="Proceed to Production" class="oe_highlight" attrs="{'invisible':[('state','!=','sale')]}"/>
                         <button name="button_delivered" type="object" string="Delivered" class="oe_highlight" attrs="{'invisible':[('state','!=','sent_for_prod')]}"/>
-                        <field name="state" widget="statusbar" statusbar_visible="draft,submitted,reviewed,approved,returned,rejected,cpv_failed,cpv_pending,sent_for_prod,delivered,pending"/>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,submitted,reviewed,sale,returned,rejected,cpv_failed,cpv_pending,sent_for_prod,delivered,pending"/>
                     </header>
                     <sheet>
                         <group colspan="2" col="2">
@@ -63,19 +62,19 @@
                         </group>
                         <group colspan="2" col="2">
                             <group>
-                                <field name="service_type" string="Service Type" attrs="{'readonly':[('state','not in',['draft','submitted'])],'required':[('state','=','submitted')]}"/>
-                                <field name="base_no" string="Base Number" attrs="{'readonly':[('state','not in',['draft','submitted'])],'required':[('state','=','submitted')]}"/>
-                                <field name="base_account_no" attrs="{'readonly':[('state','not in',['draft','submitted'])],'required':[('state','=','submitted')]}" string="Account No"/>
-                                <field name="currency_id" string="Currency" attrs="{'readonly':[('state','not in',['draft','submitted'])],'required':[('state','=','submitted')]}" />
+                                <field name="service_type" string="Service Type" attrs="{'readonly':[('state','!=','draft')],'required':[('state','=','submitted')]}"/>
+                                <field name="base_no" string="Base Number" attrs="{'readonly':[('state','!=','draft')],'required':[('state','=','submitted')]}"/>
+                                <field name="base_account_no" attrs="{'readonly':[('state','!=','draft')],'required':[('state','=','submitted')]}" string="Account No"/>
+                                <field name="currency_id" string="Currency" attrs="{'readonly':[('state','!=','draft')],'required':[('state','=','submitted')]}" />
                                 <field name="is_rejected" invisible="1" />
                                 <field name="reject_reason" attrs="{'invisible':[('is_rejected','=',False)]}"/>
                             </group>
                             <group>
-                                <field name="pick_location" string="Pick up Location" attrs="{'readonly':[('state','not in',['draft','submitted'])],'required':[('state','=','submitted')]}" />
-                                <field name="card_type" string="Card Type" attrs="{'readonly':[('state','not in',['draft','submitted'])],'required':[('state','=','submitted')]}" />
-                                <field name="prepayment_percentage" string="Prepayment Percent" attrs="{'readonly':[('state','not in',['draft','submitted'])],'required':[('state','=','submitted')]}" />
-                                <field name="reviewed_by_tl" string="Reviewed by Team Leader" attrs="{'readonly':[('state','not in',['draft','submitted','reviewed'])],'required':[('state','=','reviewed')]}" groups="crm_customization.group_team_leader"/>
-                                <field name="reviewed_by_sm" string="Reviewed by Sales Manager" attrs="{'readonly':[('state','not in',['draft','submitted','reviewed'])],'required':[('state','=','reviewed')]}" groups="crm_customization.group_team_manager"/>
+                                <field name="pick_location" string="Pick up Location" attrs="{'readonly':[('state','!=','draft')],'required':[('state','=','submitted')]}" />
+                                <field name="card_type" string="Card Type" attrs="{'readonly':[('state','!=','draft')],'required':[('state','=','submitted')]}" />
+                                <field name="prepayment_percentage" string="Prepayment Percent" attrs="{'readonly':[('state','!=','draft')],'required':[('state','=','submitted')]}" />
+                                <field name="reviewed_by_tl" string="Reviewed by Team Leader" attrs="{'readonly':[('state','!=','approved')],'required':[('state','=','reviewed')]}"/>
+                                <field name="reviewed_by_sm" string="Reviewed by Sales Manager" attrs="{'readonly':[('state','!=','approved')],'required':[('state','=','reviewed')]}"/>
                             </group>
                         </group>
                         <notebook>
@@ -276,6 +275,9 @@
         <menuitem id="menu_crm_operation" name="Operations"
                   web_icon="crm_customization,static/description/icon.png"
                   action="crm_customization.action_crm_general"/>
+        <record id="sale.action_orders" model="ir.actions.act_window">
+            <field name="domain">[('state', 'not in', ('draft', 'sent', 'cancel','submitted','reviewed','returned','rejected'))]</field>
+        </record>
 
     </data>
 </odoo>
