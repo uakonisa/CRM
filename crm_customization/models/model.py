@@ -6,7 +6,7 @@ import datetime
 from datetime import timedelta
 
 
-class InheritEmployee(models.Model):
+class EmployeeInherit(models.Model):
     _inherit = 'hr.employee'
 
     employee_number = fields.Char('Employee Number')
@@ -185,7 +185,10 @@ class InheritCRM(models.Model):
 
     def submit_operation(self):
         rec = []
-        rec.append((0, 0, {'product_id': 5,}))
+        product = self.env['product.product'].search([('name','=','Account Opening')])
+        if not product:
+            raise ValidationError(_('Kindly add the product of Account opening.'))
+        rec.append((0, 0, {'product_id': product.id}))
         application = self.env['sale.order'].create({'partner_id': self.client_id.id,
                                                      'order_line': rec})
         application.get_personal_data()
@@ -193,7 +196,7 @@ class InheritCRM(models.Model):
 
     def action_open_request(self):
         return {
-            'name': _('Additional Service Request'),
+            'name': _('Applications'),
             'view_type': 'form',
             'view_mode': 'tree,form',
             'res_model': 'sale.order',
@@ -256,17 +259,10 @@ class InheritSaleOrder(models.Model):
 
     service_type = fields.Selection([('ec','ECard(Wallet)'),('cl','Consumer Loan'),('vehicle','Vehicle Rent'),('insurance','Insurance')], default='')
     reject_reason = fields.Char('Reject Reason', index=True, tracking=True)
-    state = fields.Selection([
-        ('draft', 'Draft'),('submitted','Submitted'),('reviewed','Reviewed'),
-        ('approved','Approved'),('returned','Returned'),('rejected','Rejected'),
-        ('cpv_failed','CPV Failed'),('cpv_pending','CPV Pending'),
-        ('sent_for_prod','Sent for Production'),('delivered','Delivered'),('pending','Pending Activation'),
-        ('sent', 'Quotation Sent'),
-        ('sale', 'Sales Order'),
-        ('done', 'Locked'),
-        ('cancel', 'Cancelled'),
-        ], string='Status', readonly=True, copy=False, index=True, tracking=3, default='draft')
-
+    # state = fields.Selection(selection_add=([('submitted','Submitted'),('reviewed','Reviewed'),
+    #     ('approved','Approved'),('returned','Returned'),('rejected','Rejected'),
+    #     ('cpv_failed','CPV Failed'),('cpv_pending','CPV Pending'),
+    #     ('sent_for_prod','Sent for Production'),('delivered','Delivered'),('pending','Pending Activation')]),string='Status', readonly=True, copy=False, index=True, tracking=3, default='draft')
     account_no = fields.Char(string='Account Number', store=True)
     applicant_name = fields.Char(string='Applicant Name',store=True)
     passport_no = fields.Char('Present Passport Number')
@@ -309,7 +305,7 @@ class InheritSaleOrder(models.Model):
     arrival_city = fields.Char(store=True)
     sales_agent = fields.Many2one('hr.employee', string='Sales Agent')
     sales_agent_id = fields.Char(related='sales_agent.employee_number')
-    sales_officer = fields.Many2one(related='sales_agent.supervisor')
+    sales_officer = fields.Many2one(related='sales_agent.parent_id')
     sales_department = fields.Many2one(related='sales_agent.department_id')
     sales_deadline = fields.Date(string='Last Day Month', default=datetime.date.today()+timedelta(days=2))
     digital_signature_attach = fields.Binary('Digital Signature Form')
@@ -434,6 +430,8 @@ class InheritSaleOrder(models.Model):
 class OperationReq(models.Model):
     _name = 'operation.request'
     name = fields.Char()
+
+
 
 
 

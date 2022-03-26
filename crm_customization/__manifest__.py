@@ -3,7 +3,7 @@
 {
     'name': "CRM module customizations.",
     'summary': """CRM module customizations""",
-    'description': """ Module for the crm customizations """,
+    'description': """ Module for the crm customizations .""",
     'author': "SIT & Think Digital",
     'website': "",
     'category': 'CRM',

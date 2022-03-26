@@ -1,5 +1,15 @@
 <odoo>
     <data>
+        <record model="ir.ui.view" id="employee_view_inherit_sit">
+            <field name="name">employee.view.crm</field>
+            <field name="model">hr.employee</field>
+            <field name="inherit_id" ref="hr.view_employee_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='mobile_phone']" position="before">
+                    <field name="employee_number" />
+                </xpath>
+            </field>
+        </record>
 
         <record model="ir.ui.view" id="crm_custom_view_stage_tree">
             <field name="name">crm.view.inherit.tree</field>
