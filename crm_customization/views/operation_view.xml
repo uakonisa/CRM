@@ -62,20 +62,20 @@
                         </group>
                         <group colspan="2" col="2">
                             <group>
-                                <field name="service_type" string="Service Type" attrs="{'readonly':[('state','!=','draft')],'required':[('state','=','submitted')]}"/>
-                                <field name="base_no" string="Base Number" attrs="{'readonly':[('state','!=','draft')],'required':[('state','=','submitted')]}"/>
-                                <field name="base_account_no" attrs="{'readonly':[('state','!=','draft')],'required':[('state','=','submitted')]}" string="Account No"/>
-                                <field name="currency_id" options="{&quot;no_open&quot;: True, &quot;no_create&quot;: True}" string="Currency" attrs="{'readonly':[('state','!=','draft')],'required':[('state','=','submitted')]}" />
+                                <field name="service_type" string="Service Type" attrs="{'readonly':[('state','not in',['draft','submitted'])],'required':[('state','=','submitted')]}"/>
+                                <field name="base_no" string="Base Number" attrs="{'readonly':[('state','not in',['draft','submitted'])],'required':[('state','=','submitted')]}"/>
+                                <field name="base_account_no" attrs="{'readonly':[('state','not in',['draft','submitted'])],'required':[('state','=','submitted')]}" string="Account No"/>
+                                <field name="currency_id" options="{&quot;no_open&quot;: True, &quot;no_create&quot;: True}" string="Currency" attrs="{'readonly':[('state','not in',['draft','submitted'])],'required':[('state','=','submitted')]}" />
                                 <field name="is_rejected" invisible="1" />
                                 <field name="reject_reason" attrs="{'invisible':[('is_rejected','=',False)]}"/>
                             </group>
                             <group>
-                                <field name="pick_location" string="Pick up Location" attrs="{'readonly':[('state','!=','draft')],'required':[('state','=','submitted')]}" />
-                                <field name="card_type" string="Card Type" attrs="{'readonly':[('state','!=','draft')],'required':[('state','=','submitted')]}" />
-                                <field name="prepayment_percentage" string="Prepayment Percent" attrs="{'readonly':[('state','!=','draft')],'required':[('state','=','submitted')]}" />
-                                <field name="percent" string="Percentage" attrs="{'readonly':[('state','!=','draft')],'required':[('prepayment_percentage','=','other')],'invisible':[('prepayment_percentage','!=','other')]}" />
-                                <field name="reviewed_by_tl" string="Reviewed by Team Leader" attrs="{'readonly':[('state','!=','approved')],'required':[('state','=','reviewed')]}"/>
-                                <field name="reviewed_by_sm" string="Reviewed by Sales Manager" attrs="{'readonly':[('state','!=','approved')],'required':[('state','=','reviewed')]}"/>
+                                <field name="pick_location" string="Pick up Location" attrs="{'readonly':[('state','not in',['draft','submitted'])],'required':[('state','=','submitted')]}" />
+                                <field name="card_type" string="Card Type" attrs="{'readonly':[('state','not in',['draft','submitted'])],'required':[('state','=','submitted')]}" />
+                                <field name="prepayment_percentage" string="Prepayment Percent" attrs="{'readonly':[('state','not in',['draft','submitted'])],'required':[('state','=','submitted')]}" />
+                                <field name="percent" string="Percentage" attrs="{'readonly':[('state','not in',['draft','submitted'])],'required':[('prepayment_percentage','=','other')],'invisible':[('prepayment_percentage','!=','other')]}" />
+                                <field name="reviewed_by_tl" string="Reviewed by Team Leader" attrs="{'readonly':[('state','not in',['draft','submitted','reviewed'])],'required':[('state','=','reviewed')]}"/>
+                                <field name="reviewed_by_sm" string="Reviewed by Sales Manager" attrs="{'readonly':[('state','not in',['draft','submitted','reviewed'])],'required':[('state','=','reviewed')]}"/>
                             </group>
                         </group>
                         <notebook>
