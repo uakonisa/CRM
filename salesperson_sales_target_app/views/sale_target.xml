@@ -72,13 +72,61 @@
 				</tree>
 			</field>
 		</record>
+		 <record model="ir.ui.view" id="view_sale_target_graph">
+            <field name="name">saletarget.saletarget.graph</field>
+            <field name="model">saletarget.saletarget</field>
+            <field name="arch" type="xml">
+                <graph string="Sales Target" sample="1">
+                    <field name="sales_person_id"/>
+                    <field name="achieve" type="measure"/>
+                </graph>
+            </field>
+        </record>
+		 <record model="ir.ui.view" id="view_sale_target_pivot">
+            <field name="name">saletarget.saletarget.pivot</field>
+            <field name="model">saletarget.saletarget</field>
+            <field name="arch" type="xml">
+                <pivot string="Sales Target" sample="1">
+                    <field name="sales_person_id" type="row"/>
+                    <field name="achieve" type="measure"/>
+                </pivot>
+            </field>
+        </record>
 
 		<record id="sale_target_entry" model="ir.actions.act_window">
 			<field name="name">Sale Target</field>
 			<field name="res_model">saletarget.saletarget</field>
 			<field name="view_mode">form</field>
-			<field name="view_mode">tree,form</field>
+			<field name="view_mode">tree,form,pivot,graph</field>
 		</record>
+
+        <record id="sale_target_action_view_order_tree" model="ir.actions.act_window.view">
+            <field name="sequence" eval="1"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="salesperson_sales_target_app.sale_target_tree_view"/>
+            <field name="act_window_id" ref="sale_target_entry"/>
+        </record>
+
+		  <record id="sale_target_action_view_order_form" model="ir.actions.act_window.view">
+            <field name="sequence" eval="3"/>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="salesperson_sales_target_app.sale_target_form_view"/>
+            <field name="act_window_id" ref="sale_target_entry"/>
+        </record>
+
+		  <record id="sale_target_action_view_order_pivot" model="ir.actions.act_window.view">
+            <field name="sequence" eval="5"/>
+            <field name="view_mode">pivot</field>
+            <field name="view_id" ref="salesperson_sales_target_app.view_sale_target_pivot"/>
+            <field name="act_window_id" ref="sale_target_entry"/>
+        </record>
+
+        <record id="sale_target_action_view_order_graph" model="ir.actions.act_window.view">
+            <field name="sequence" eval="6"/>
+            <field name="view_mode">graph</field>
+            <field name="view_id" ref="salesperson_sales_target_app.view_sale_target_graph"/>
+            <field name="act_window_id" ref="sale_target_entry"/>
+        </record>
 
 		<menuitem name="Sales Target" id="sale_target_report" parent="sale.sale_order_menu" action="sale_target_entry"/>
 
