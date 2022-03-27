@@ -437,7 +437,7 @@ class InheritSaleOrder(models.Model):
         return self.write({'state': 'delivered'})
 
     def button_approved(self):
-        return self.write({'state':'sale'})
+        self.action_confirm()
 
     def button_proceed_production(self):
         users = self.env.ref('crm_customization.group_production_responsible').users

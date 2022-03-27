@@ -4,9 +4,10 @@ from odoo import models, fields, api, _
 from datetime import datetime,date
 from odoo.exceptions import UserError
 
+
 class SaleTarget(models.Model):
-	_name="saletarget.saletarget"
-	_description= "Sales Target"
+	_name = "saletarget.saletarget"
+	_description = "Sales Target"
 
 	name = fields.Char(string='Order Reference', required=True, copy=False, readonly=True, index=True, default=lambda self: _('New'))
 	sales_person_id = fields.Many2one('hr.employee',string="Salesperson")
@@ -99,9 +100,13 @@ class TargetLine(models.Model):
 	reverse_id = fields.Many2one('saletarget.saletarget')
 	product_id = fields.Many2one('product.product', string="Product", required=True)
 	target_quantity = fields.Integer(string="Target Quantity", required=True)
+	threshold_quantity = fields.Integer(string="Threshold Quantity", required=True)
 	achieve_quantity = fields.Integer(string="Achieve Quantity", readonly=True)
-	achieve_perc = fields.Integer(string="Achieve Percentage",compute="_get_percentage",store=True)
-	   
+	achievement_ratio = fields.Float(string="Achievement Ratio", readonly=True)
+	incentive_unit_product = fields.Float(string='Incentive/Unit Product', required=True)
+	achieve_perc = fields.Integer(string="Achieve Percentage", compute="_get_percentage",store=True)
+	incentive_pay = fields.Float(string='Incentives Pay Out', compute='_get_incentive_amount', store=True)
+
 	@api.depends('target_quantity','achieve_quantity')                   
 	def _get_percentage(self):
 		for temp in self:
@@ -109,4 +114,16 @@ class TargetLine(models.Model):
 				temp.achieve_perc=temp.achieve_quantity * 100/temp.target_quantity
 			except ZeroDivisionError:
 				return temp.achieve_perc
+
+	@api.depends('target_quantity','target_quantity','achieve_quantity')
+	def _get_ratio(self):
+		for rec in self:
+			if rec.target_quantity:
+				rec.achievement_ratio = rec.achieve_quantity / rec.target_quantity
+
+	@api.depends('target_quantity', 'threshold_quantity', 'achieve_quantity', 'achievement_ratio', 'incentive_unit_product')
+	def _get_incentive_amount(self):
+		for lines in self:
+			if lines.achieve_quantity > lines.threshold_quantity:
+				lines.incentive_pay = lines.achieve_quantity * lines.incentive_unit_product
 
