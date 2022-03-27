@@ -66,6 +66,9 @@
                     <button name="button_lock" string="Lock" class="oe_highlight" type="object" attrs="{'invisible': [('unlocked','=',False)]}" groups="crm_customization.group_team_manager"/>
                     <button name="button_unlock" string="Unlock" class="oe_highlight" type="object" attrs="{'invisible': [('is_accepted','=',False)]}" groups="crm_customization.group_team_manager"/>
                 </xpath>
+                <xpath expr="//button[@name='action_set_won_rainbowman']" position="attributes">
+                    <attribute name="groups">crm_customization.group_team_leader</attribute>
+                </xpath>
                 <xpath expr="//field[@name='name']" position="attributes">
                     <attribute name="string">PP Client name</attribute>
                 </xpath>
@@ -190,10 +193,10 @@
                     <page string="Sale Agent Information" attrs="{'invisible':[('has_travel_info','=',False)]}">
                         <group string="Sale Agent Information">
                             <group>
-                                <field name="sales_agent" attrs="{'required':[('has_travel_info','=',True)],'readonly':[('is_sa_info','=',True)]}" string="Name" />
+                                <field name="sales_agent" options="{&quot;no_create&quot;: True}" attrs="{'required':[('has_travel_info','=',True)],'readonly':[('is_sa_info','=',True)]}" string="Name" />
                                 <field name="sales_agent_id" attrs="{'required':[('has_travel_info','=',True)],'readonly':[('is_sa_info','=',True)]}" string="Agent ID" />
-                                <field name="sales_officer" attrs="{'required':[('has_travel_info','=',True)],'readonly':[('is_sa_info','=',True)]}" string="Sale Officer" />
-                                <field name="sales_department" attrs="{'required':[('has_travel_info','=',True)],'readonly':[('is_sa_info','=',True)]}" string="Department" />
+                                <field name="sales_officer" options="{&quot;no_create&quot;: True}" attrs="{'required':[('has_travel_info','=',True)],'readonly':[('is_sa_info','=',True)]}" string="Sale Officer" />
+                                <field name="sales_department" options="{&quot;no_create&quot;: True}" attrs="{'required':[('has_travel_info','=',True)],'readonly':[('is_sa_info','=',True)]}" string="Department" />
                                 <field name="sales_deadline" attrs="{'required':[('has_travel_info','=',True)],'readonly':[('is_sa_info','=',True)]}" string="Deadline" />
                             </group>
                             <group string="Attachments">
