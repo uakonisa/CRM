@@ -106,6 +106,7 @@ class InheritCRM(models.Model):
     is_allocated = fields.Boolean(default=False)
     is_accepted = fields.Boolean(default=False)
     is_rejected = fields.Boolean(default=False)
+    is_sa_info = fields.Boolean(default=False)
     reject_reason = fields.Char('Reject Reason')
     operation_state = fields.Selection([('draft','Draft'),('submit','Submitted'),('reviewed','Reviewed'),('approved','Approved'),('returned','Returned'),('rejected','Rejected'),
                                         ('cpv_failed','CPV Failed'),('cpv_pending','CPV Pending'),('sent_for_prod','Sent for Production'),('delivered','Delivered'),('pending','Pending Activation')], default='draft')
@@ -131,6 +132,7 @@ class InheritCRM(models.Model):
     undertaking_form = fields.Binary('Undertaking Letter')
     has_client = fields.Boolean(default=False)
     has_application = fields.Boolean(default=False)
+    unlocked = fields.Boolean(default=False)
 
     _sql_constraints = [
         ('unique_account_no', "unique(account_no)", "Active Base Number must be unique."),
@@ -143,6 +145,7 @@ class InheritCRM(models.Model):
 
     def proceed_doc_submit(self):
         self.stage_id = self.env['crm.stage'].search([('is_reviewed','=',True)]).id
+        self.is_reviewed = True
         self.has_docs = True
 
     def proceed_allocation(self):
@@ -152,7 +155,22 @@ class InheritCRM(models.Model):
 
     def proceed_card_deliver(self):
         self.stage_id = self.env['crm.stage'].search([('is_card', '=', True)]).id
+        self.is_sa_info = True
         self.has_sa = True
+
+    def button_unlock(self):
+        return self.write({'is_sa_info': False,
+                           'is_allocated': False,
+                           'is_reviewed': False,
+                           'is_accepted': False,
+                           'unlocked': True})
+
+    def button_lock(self):
+        return self.write({'is_sa_info': True,
+                           'is_allocated': True,
+                           'is_reviewed': True,
+                           'is_accepted': True,
+                           'unlocked': False})
 
     @api.depends('birthday')
     def get_age(self):

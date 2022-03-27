@@ -63,6 +63,8 @@
                 </xpath>
                 <xpath expr="//header" position="inside">
                     <button name="submit_operation" string="Submit to Review" class="oe_highlight" type="object" attrs="{'invisible': [('has_client','=',False)]}" groups="crm_customization.group_team_manager"/>
+                    <button name="button_lock" string="Lock" class="oe_highlight" type="object" attrs="{'invisible': [('unlocked','=',False)]}" groups="crm_customization.group_team_manager"/>
+                    <button name="button_unlock" string="Unlock" class="oe_highlight" type="object" attrs="{'invisible': [('is_accepted','=',False)]}" groups="crm_customization.group_team_manager"/>
                 </xpath>
                 <xpath expr="//field[@name='name']" position="attributes">
                     <attribute name="string">PP Client name</attribute>
@@ -79,6 +81,8 @@
                     <field name="has_sa" invisible="1"/>
                     <field name="has_client" invisible="1"/>
                     <field name="has_application" invisible="1" />
+                    <field name="is_sa_info" invisible="1" />
+                    <field name="unlocked" invisible="1" />
                     <field name="additional_service" widget="radio" attrs="{'invisible':[('has_sa','=',False)]}"/>
                     <field name="exchange_card" string="D-Card" attrs="{'invisible':[('additional_service','=','no')]}" />
                     <field name="consumer_loan" string="Consumer Loan" attrs="{'invisible':[('additional_service','=','no')]}" />
@@ -160,10 +164,10 @@
                     <page string="Documents" attrs="{'invisible':[('has_info','=',False)]}">
                         <group string="Documents">
                             <group>
-                                <field name="passport_attachment" attrs="{'required':[('has_info','=',True)],'readonly':[('has_docs','=',True)]}" string="Passport" />
+                                <field name="passport_attachment" attrs="{'required':[('has_info','=',True)],'readonly':[('is_reviewed','=',True)]}" string="Passport" />
                             </group>
                             <group>
-                                <field name="fatch_form_attachment" attrs="{'required':[('has_info','=',True)],'readonly':[('has_docs','=',True)]}" string="FATCA Form" />
+                                <field name="fatch_form_attachment" attrs="{'required':[('has_info','=',True)],'readonly':[('is_reviewed','=',True)]}" string="FATCA Form" />
                             </group>
                         </group>
                         <button name="proceed_doc_submit" string="Proceed" type="object" class="oe_highlight" />
@@ -171,12 +175,12 @@
                     <page string="Travel Information" attrs="{'invisible':[('has_docs','=',False)]}">
                         <group string="Travel Information">
                             <group>
-                                <field name="dcard_number" attrs="{'required':[('has_docs','=',True)],'readonly':[('has_travel_info','=',True)]}" string="D-Card Number" />
-                                <field name="arrival_time" attrs="{'required':[('has_docs','=',True)],'readonly':[('has_travel_info','=',True)]}" string="Arrival Time" />
-                                <field name="airline_agency" attrs="{'required':[('has_docs','=',True)],'readonly':[('has_travel_info','=',True)]}" string="Airline Agency" />
-                                <field name="flight_reference" attrs="{'required':[('has_docs','=',True)],'readonly':[('has_travel_info','=',True)]}" string="Flight Reference" />
-                                <field name="departure_city" attrs="{'required':[('has_docs','=',True)],'readonly':[('has_travel_info','=',True)]}" string="Departure City" />
-                                <field name="arrival_city" attrs="{'required':[('has_docs','=',True)],'readonly':[('has_travel_info','=',True)]}" string="Arrival City" />
+                                <field name="dcard_number" attrs="{'required':[('has_docs','=',True)],'readonly':[('is_allocated','=',True)]}" string="D-Card Number" />
+                                <field name="arrival_time" attrs="{'required':[('has_docs','=',True)],'readonly':[('is_allocated','=',True)]}" string="Arrival Time" />
+                                <field name="airline_agency" attrs="{'required':[('has_docs','=',True)],'readonly':[('is_allocated','=',True)]}" string="Airline Agency" />
+                                <field name="flight_reference" attrs="{'required':[('has_docs','=',True)],'readonly':[('is_allocated','=',True)]}" string="Flight Reference" />
+                                <field name="departure_city" attrs="{'required':[('has_docs','=',True)],'readonly':[('is_allocated','=',True)]}" string="Departure City" />
+                                <field name="arrival_city" attrs="{'required':[('has_docs','=',True)],'readonly':[('is_allocated','=',True)]}" string="Arrival City" />
                             </group>
                             <group>
                             </group>
@@ -186,17 +190,17 @@
                     <page string="Sale Agent Information" attrs="{'invisible':[('has_travel_info','=',False)]}">
                         <group string="Sale Agent Information">
                             <group>
-                                <field name="sales_agent" attrs="{'required':[('has_travel_info','=',True)],'readonly':[('has_sa','=',True)]}" string="Name" />
-                                <field name="sales_agent_id" attrs="{'required':[('has_travel_info','=',True)],'readonly':[('has_sa','=',True)]}" string="Agent ID" />
-                                <field name="sales_officer" attrs="{'required':[('has_travel_info','=',True)],'readonly':[('has_sa','=',True)]}" string="Sale Officer" />
-                                <field name="sales_department" attrs="{'required':[('has_travel_info','=',True)],'readonly':[('has_sa','=',True)]}" string="Department" />
-                                <field name="sales_deadline" attrs="{'required':[('has_travel_info','=',True)],'readonly':[('has_sa','=',True)]}" string="Deadline" />
+                                <field name="sales_agent" attrs="{'required':[('has_travel_info','=',True)],'readonly':[('is_sa_info','=',True)]}" string="Name" />
+                                <field name="sales_agent_id" attrs="{'required':[('has_travel_info','=',True)],'readonly':[('is_sa_info','=',True)]}" string="Agent ID" />
+                                <field name="sales_officer" attrs="{'required':[('has_travel_info','=',True)],'readonly':[('is_sa_info','=',True)]}" string="Sale Officer" />
+                                <field name="sales_department" attrs="{'required':[('has_travel_info','=',True)],'readonly':[('is_sa_info','=',True)]}" string="Department" />
+                                <field name="sales_deadline" attrs="{'required':[('has_travel_info','=',True)],'readonly':[('is_sa_info','=',True)]}" string="Deadline" />
                             </group>
                             <group string="Attachments">
-                                <field name="digital_signature_attach" attrs="{'required':[('has_travel_info','=',True)],'readonly':[('has_sa','=',True)]}"/>
-                                <field name="account_op_form" attrs="{'required':[('has_travel_info','=',True)],'readonly':[('has_sa','=',True)]}"/>
-                                <field name="dcard_form" attrs="{'required':[('has_travel_info','=',True)],'readonly':[('has_sa','=',True)]}" />
-                                <field name="undertaking_form" attrs="{'required':[('has_travel_info','=',True)],'readonly':[('has_sa','=',True)]}" />
+                                <field name="digital_signature_attach" attrs="{'required':[('has_travel_info','=',True)],'readonly':[('is_sa_info','=',True)]}"/>
+                                <field name="account_op_form" attrs="{'required':[('has_travel_info','=',True)],'readonly':[('is_sa_info','=',True)]}"/>
+                                <field name="dcard_form" attrs="{'required':[('has_travel_info','=',True)],'readonly':[('is_sa_info','=',True)]}" />
+                                <field name="undertaking_form" attrs="{'required':[('has_travel_info','=',True)],'readonly':[('is_sa_info','=',True)]}" />
                             </group>
                         </group>
                         <button name="proceed_card_deliver" string="Proceed" type="object" class="oe_highlight" />
