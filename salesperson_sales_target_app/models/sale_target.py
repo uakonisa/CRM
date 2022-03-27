@@ -99,9 +99,9 @@ class TargetLine(models.Model):
 	name = fields.Char(string="Name")
 	reverse_id = fields.Many2one('saletarget.saletarget')
 	product_id = fields.Many2one('product.product', string="Product", required=True)
-	target_quantity = fields.Integer(string="Target Quantity", required=True)
-	threshold_quantity = fields.Integer(string="Threshold Quantity", required=True)
-	achieve_quantity = fields.Integer(string="Achieve Quantity", readonly=True)
+	target_quantity = fields.Integer(string="Target Amount", required=True)
+	threshold_quantity = fields.Integer(string="Threshold Amount", required=True)
+	achieve_quantity = fields.Integer(string="Achieve Amount", readonly=True)
 	achievement_ratio = fields.Float(string="Achievement Ratio", readonly=True)
 	incentive_unit_product = fields.Float(string='Incentive/Unit Product', required=True)
 	achieve_perc = fields.Integer(string="Achieve Percentage", compute="_get_percentage",store=True)
@@ -115,7 +115,7 @@ class TargetLine(models.Model):
 			except ZeroDivisionError:
 				return temp.achieve_perc
 
-	@api.depends('target_quantity','target_quantity','achieve_quantity')
+	@api.depends('target_quantity','threshold_quantity','achieve_quantity')
 	def _get_ratio(self):
 		for rec in self:
 			if rec.target_quantity:
