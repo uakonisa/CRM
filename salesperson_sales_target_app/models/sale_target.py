@@ -97,6 +97,7 @@ class TargetLine(models.Model):
 	_description= "Sales Target Line"
 
 	name = fields.Char(string="Name")
+	salesperson_id = fields.Many2one('hr.employee')
 	reverse_id = fields.Many2one('saletarget.saletarget')
 	product_id = fields.Many2one('product.product', string="Product", required=True)
 	target_quantity = fields.Integer(string="Target Quantity", required=True)
@@ -119,4 +120,10 @@ class TargetLine(models.Model):
 		for lines in self:
 			if lines.achieve_quantity > lines.threshold_quantity:
 				lines.incentive_pay = lines.achieve_quantity * lines.incentive_unit_product
+
+	@api.onchange('product_id')
+	def get_salesperson(self):
+		for rec in self:
+			if rec.product_id:
+				rec.salesperson_id = rec.reverse_id.sales_person_id.id
 

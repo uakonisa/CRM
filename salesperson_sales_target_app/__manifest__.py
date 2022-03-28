@@ -15,6 +15,7 @@
         'data/sequence.xml',
         'data/mail_template.xml',
         'views/sale_target.xml',
+        'views/sale_target_line.xml',
     ],
     'qweb' : [],
     'demo': [],
