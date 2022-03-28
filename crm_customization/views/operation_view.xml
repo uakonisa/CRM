@@ -62,15 +62,15 @@
                         </group>
                         <group colspan="2" col="2">
                             <group>
-                                <field name="service_type" string="Service Type" attrs="{'readonly':[('state','not in',['draft','submitted'])],'required':[('state','=','submitted')]}"/>
+                                <field name="service_type_id" options="{&quot;no_create&quot;: True}" string="Service Type" attrs="{'readonly':[('state','not in',['draft','submitted'])],'required':[('state','=','submitted')]}"/>
                                 <field name="base_no" string="Base Number" attrs="{'readonly':[('state','not in',['draft','submitted'])],'required':[('state','=','submitted')]}"/>
                                 <field name="base_account_no" attrs="{'readonly':[('state','not in',['draft','submitted'])],'required':[('state','=','submitted')]}" string="Account No"/>
-                                <field name="currency_id" options="{&quot;no_open&quot;: True, &quot;no_create&quot;: True}" string="Currency" attrs="{'readonly':[('state','not in',['draft','submitted'])],'required':[('state','=','submitted')]}" />
+                                <field name="currency_id" options="{&quot;no_create&quot;: True}" string="Currency" attrs="{'readonly':[('state','not in',['draft','submitted'])],'required':[('state','=','submitted')]}" />
                                 <field name="is_rejected" invisible="1" />
                                 <field name="reject_reason" attrs="{'invisible':[('is_rejected','=',False)]}"/>
                             </group>
                             <group>
-                                <field name="pick_location" string="Pick up Location" attrs="{'readonly':[('state','not in',['draft','submitted'])],'required':[('state','=','submitted')]}" />
+                                <field name="pick_location_id" options="{&quot;no_open&quot;: True, &quot;no_create&quot;: True}" string="Pick up Location" attrs="{'readonly':[('state','not in',['draft','submitted'])],'required':[('state','=','submitted')]}" />
                                 <field name="card_type" string="Card Type" attrs="{'readonly':[('state','not in',['draft','submitted'])],'required':[('state','=','submitted')]}" />
                                 <field name="prepayment_percentage" string="Prepayment Percent" attrs="{'readonly':[('state','not in',['draft','submitted'])],'required':[('state','=','submitted')]}" />
                                 <field name="percent" string="Percentage" attrs="{'readonly':[('state','not in',['draft','submitted'])],'required':[('prepayment_percentage','=','other')],'invisible':[('prepayment_percentage','!=','other')]}" />
@@ -240,7 +240,7 @@
                     <field name="mobile_con" />
                     <field name="nationality" />
                     <field name="employer_id" />
-                    <field name="service_type" />
+                    <field name="service_type_id" />
                     <field name="sales_agent" />
                     <field name="sales_officer" />
                     <field name="state" />

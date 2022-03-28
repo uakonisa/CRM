@@ -43,7 +43,6 @@
 										<field name="target_quantity"/>
 										<field name="threshold_quantity"/>
 										<field name="achieve_quantity"/>
-										<field name="achievement_ratio"/>
 										<field name="incentive_unit_product" />
 										<field name="achieve_perc"  widget="progressbar"/>
 										<field name="incentive_pay" />

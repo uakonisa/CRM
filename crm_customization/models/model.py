@@ -282,7 +282,7 @@ class RejectReason(models.TransientModel):
 class InheritSaleOrder(models.Model):
     _inherit = 'sale.order'
 
-    service_type = fields.Selection([('ec','ECard(Wallet)'),('cl','Consumer Loan'),('vehicle','Vehicle Rent'),('insurance','Insurance')], default='')
+    service_type_id = fields.Many2one('service.type', store=True)
     reject_reason = fields.Char('Reject Reason', index=True, tracking=True)
     state = fields.Selection([
         ('draft', 'New'),
@@ -351,7 +351,7 @@ class InheritSaleOrder(models.Model):
     fatch_form_attachment = fields.Binary(store=True, index=True)
     base_no = fields.Char(store=True)
     base_account_no = fields.Char(store=True)
-    pick_location = fields.Char(store=True)
+    pick_location_id = fields.Many2one('pickup.location', store=True)
     card_type = fields.Selection([('credit_card','Credit Card'),('cash_card','Cash Card')], default='')
     prepayment_percentage = fields.Selection([('3','3%'),('10','10%'),('other','other%')])
     percent = fields.Float()
@@ -364,7 +364,9 @@ class InheritSaleOrder(models.Model):
     def get_personal_data(self):
         if self.partner_id:
             contact = self.env['crm.lead'].search([('client_id','=',self.partner_id.id)])
+            self.service_type_id = self.env['service.type'].search([('serial_no','=',1)],limit=1).id
             self.account_no = contact.account_no
+            self.base_no = contact.account_no
             self.applicant_name = contact.applicant_name
             self.nationality = contact.nationality.id
             self.employer_id = contact.employer_id.id
@@ -464,6 +466,24 @@ class InheritSaleOrder(models.Model):
 class OperationReq(models.Model):
     _name = 'operation.request'
     name = fields.Char()
+
+
+class LocationPick(models.Model):
+    _name = 'pickup.location'
+
+    address = fields.Char('Street Address')
+    city = fields.Char('City')
+    country_id = fields.Many2one('res.country', 'Country')
+
+
+class ServiceType(models.Model):
+    _name = 'service.type'
+
+    serial_no = fields.Integer('Serial', required=True)
+    name = fields.Char('Service Name', required=True)
+
+    _sql_constraints = [
+        ('unique_serial_no', "unique(serial_no)", "Serial must be unique.")]
 
 
 

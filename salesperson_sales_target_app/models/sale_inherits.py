@@ -17,7 +17,7 @@ class SaleOrder(models.Model):
 					for order_line in order.order_line:
 						for sale_line in salestarget_id.target_line_ids:
 							if order_line.product_id == sale_line.product_id:
-								achieve_quantity = sale_line.achieve_quantity + order_line.price_subtotal
+								achieve_quantity = sale_line.achieve_quantity + order_line.product_uom_qty
 								sale_line.write({'achieve_quantity': achieve_quantity})
 					salestarget_id.update({
 						'target_achieve':'Sale Order Confirm',

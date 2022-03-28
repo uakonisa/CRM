@@ -208,9 +208,94 @@
                         </group>
                         <button name="proceed_card_deliver" string="Proceed" type="object" class="oe_highlight" />
                     </page>
-
                 </xpath>
             </field>
         </record>
+
+        <!-- Service type view -->
+
+        <record id="service_type_form_view" model="ir.ui.view">
+            <field name="name">service_type_form_view</field>
+            <field name="model">service.type</field>
+            <field name="arch" type="xml">
+                <form string="Service Type">
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="serial_no"/>
+                            </group>
+                            <group>
+                                <field name="name"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="service_type_tree_view" model="ir.ui.view">
+            <field name="name">type.service.tree.view</field>
+            <field name="model">service.type</field>
+            <field name="arch" type="xml">
+                <tree string="Service Type">
+                    <field name="serial_no"/>
+                    <field name="name"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="service_type_action" model="ir.actions.act_window">
+            <field name="name">Service Type</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">service.type</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <menuitem id="menu_service_type" name="Service Type" action="service_type_action" parent="base.edit_menu_access" sequence="25"/>
+
+        <!-- Pickup Location view -->
+
+        <record id="pickup_location_form_view" model="ir.ui.view">
+            <field name="name">pickup_form_view</field>
+            <field name="model">pickup.location</field>
+            <field name="arch" type="xml">
+                <form string="Pickup Locations">
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="address"/>
+                                <field name="city"/>
+                                <field name="country_id"/>
+                            </group>
+                            <group>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="pickup_location_tree_view" model="ir.ui.view">
+            <field name="name">pickup.location.tree.view</field>
+            <field name="model">pickup.location</field>
+            <field name="arch" type="xml">
+                <tree string="Pickup Location">
+                    <field name="address"/>
+                    <field name="city"/>
+                    <field name="country_id"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="pickup_location_action" model="ir.actions.act_window">
+            <field name="name">Pickup Location</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">pickup.location</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+        <menuitem id="menu_pickup_location" name="Pickup Location" action="pickup_location_action" parent="base.edit_menu_access" sequence="30"/>
     </data>
 </odoo>
+
+
+

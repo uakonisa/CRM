@@ -12,6 +12,7 @@
     'data': ['security/ir.model.access.csv',
              'security/security.xml',
              'data/crm_mail_template.xml',
+             'data/ir_sequence.xml',
              'views/operation_view.xml',
              'views/views.xml',
              'views/service_report.xml'
