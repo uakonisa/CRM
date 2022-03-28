@@ -251,7 +251,7 @@
             <field name="view_mode">tree,form</field>
         </record>
 
-        <menuitem id="menu_service_type" name="Service Type" action="service_type_action" parent="base.edit_menu_access" sequence="25"/>
+        <menuitem id="menu_service_type" name="Service Type" action="service_type_action" parent="crm.crm_menu_config" sequence="25"/>
 
         <!-- Pickup Location view -->
 
@@ -293,7 +293,7 @@
             <field name="res_model">pickup.location</field>
             <field name="view_mode">tree,form</field>
         </record>
-        <menuitem id="menu_pickup_location" name="Pickup Location" action="pickup_location_action" parent="base.edit_menu_access" sequence="30"/>
+        <menuitem id="menu_pickup_location" name="Pickup Location" action="pickup_location_action" parent="crm.crm_menu_config" sequence="30"/>
     </data>
 </odoo>
 
