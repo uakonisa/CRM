@@ -102,7 +102,7 @@ class TargetLine(models.Model):
 	product_id = fields.Many2one('product.product', string="Product", required=True)
 	target_quantity = fields.Integer(string="Target Quantity", required=True)
 	threshold_quantity = fields.Integer(string="Threshold Quantity", required=True)
-	achieve_quantity = fields.Integer(string="Achieve Quantity", readonly=True)
+	achieve_quantity = fields.Integer(string="Achieve Quantity")
 	incentive_unit_product = fields.Float(string='Incentive/Unit Product', required=True)
 	achieve_perc = fields.Integer(string="Achieve Percentage", compute="_get_percentage",store=True)
 	incentive_pay = fields.Float(string='Incentives Pay Out', compute='_get_incentive_amount', store=True)
