@@ -128,6 +128,8 @@ class TargetLine(models.Model):
 	incentive_unit_product = fields.Float(string='Incentive/Unit Product', required=True)
 	achieve_perc = fields.Integer(string="Achieve Percentage", compute="_get_percentage",store=True)
 	incentive_pay = fields.Float(string='Incentives Pay Out', compute='_get_incentive_amount', store=True)
+	points = fields.Float(string='Points', compute='_get_incentive_amount', store=True)
+	points_per_products = fields.Float(string='Points/Unit Product', required=True)
 
 	@api.depends('target_quantity','achieve_quantity')
 	def _get_difference(self):
@@ -142,11 +144,13 @@ class TargetLine(models.Model):
 			except ZeroDivisionError:
 				return temp.achieve_perc
 
-	@api.depends('target_quantity', 'threshold_quantity', 'achieve_quantity', 'incentive_unit_product')
+	@api.depends('target_quantity', 'threshold_quantity', 'achieve_quantity', 'incentive_unit_product','points_per_products')
 	def _get_incentive_amount(self):
 		for lines in self:
 			if lines.achieve_quantity >= lines.threshold_quantity:
 				lines.incentive_pay = lines.achieve_quantity * lines.incentive_unit_product
+			if lines.achieve_quantity >= lines.target_quantity:
+				lines.points = lines.points_per_products
 
 	@api.onchange('product_id')
 	def get_salesperson(self):

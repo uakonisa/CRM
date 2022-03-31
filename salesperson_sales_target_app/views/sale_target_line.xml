@@ -14,6 +14,8 @@
 								<field name="product_id"/>
 								<field name="start_date" />
 								<field name="start_date" />
+								<field name="points_per_products" />
+								<field name="points" />
 							</group>
 							<group>
 								<field name="target_quantity"/>
@@ -46,12 +48,14 @@
 					<field name="difference"/>
 					<field name="incentive_unit_product" />
 					<field name="incentive_pay" />
+					<field name="points_per_products" />
+					<field name="points" />
 					<field name="achieve_perc"  widget="progressbar"/>
 				</tree>
 			</field>
 		</record>
 
-			<record model="ir.ui.view" id="view_sale_target_line_graph">
+		<record model="ir.ui.view" id="view_sale_target_line_graph">
 			<field name="name">targetline.targetline.graph</field>
 			<field name="model">targetline.targetline</field>
 			<field name="arch" type="xml">

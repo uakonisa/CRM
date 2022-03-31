@@ -50,8 +50,10 @@
 										<field name="achieve_quantity"/>
 										<field name="difference"/>
 										<field name="incentive_unit_product" />
-										<field name="achieve_perc"  widget="progressbar"/>
 										<field name="incentive_pay" />
+										<field name="points_per_products" />
+										<field name="points" />
+										<field name="achieve_perc"  widget="progressbar"/>
 									</tree>
 								</field>
 							</page>
