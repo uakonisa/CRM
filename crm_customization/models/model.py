@@ -352,7 +352,7 @@ class InheritSaleOrder(models.Model):
     base_no = fields.Char(store=True)
     base_account_no = fields.Char(store=True)
     pick_location_id = fields.Many2one('pickup.location', store=True)
-    card_type = fields.Selection([('credit_card','Credit Card'),('cash_card','Cash Card')], default='')
+    card_type = fields.Many2one('type.card', 'Card Type')
     prepayment_percentage = fields.Selection([('3','3%'),('10','10%'),('other','other%')])
     percent = fields.Float()
 
@@ -471,7 +471,7 @@ class OperationReq(models.Model):
 class LocationPick(models.Model):
     _name = 'pickup.location'
 
-    address = fields.Char('Street Address')
+    name = fields.Char('Street Address')
     city = fields.Char('City')
     country_id = fields.Many2one('res.country', 'Country')
 
@@ -484,6 +484,17 @@ class ServiceType(models.Model):
 
     _sql_constraints = [
         ('unique_serial_no', "unique(serial_no)", "Serial must be unique.")]
+
+
+class CardType(models.Model):
+    _name = 'type.card'
+
+    serial_no = fields.Integer('Serial', required=True)
+    name = fields.Char('Name', required=True)
+
+    _sql_constraints = [
+        ('unique_serial_no', "unique(serial_no)", "Serial must be unique.")]
+
 
 
 

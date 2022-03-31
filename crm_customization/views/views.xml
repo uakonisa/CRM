@@ -263,7 +263,7 @@
                     <sheet>
                         <group>
                             <group>
-                                <field name="address"/>
+                                <field name="name"/>
                                 <field name="city"/>
                                 <field name="country_id"/>
                             </group>
@@ -280,7 +280,7 @@
             <field name="model">pickup.location</field>
             <field name="arch" type="xml">
                 <tree string="Pickup Location">
-                    <field name="address"/>
+                    <field name="name"/>
                     <field name="city"/>
                     <field name="country_id"/>
                 </tree>
@@ -294,6 +294,47 @@
             <field name="view_mode">tree,form</field>
         </record>
         <menuitem id="menu_pickup_location" name="Pickup Location" action="pickup_location_action" parent="crm.crm_menu_config" sequence="30"/>
+
+        <!-- Card Type view -->
+
+        <record id="card_type_form_view" model="ir.ui.view">
+            <field name="name">card_form_view</field>
+            <field name="model">type.card</field>
+            <field name="arch" type="xml">
+                <form string="Card Type">
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="serial_no"/>
+                                <field name="name"/>
+                            </group>
+                            <group>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="card_type_tree_view" model="ir.ui.view">
+            <field name="name">card.tree.view</field>
+            <field name="model">type.card</field>
+            <field name="arch" type="xml">
+                <tree string="Card Location">
+                    <field name="serial_no"/>
+                    <field name="name"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="card_type_action" model="ir.actions.act_window">
+            <field name="name">Card Type</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">type.card</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+        <menuitem id="menu_card_type_location" name="Card Type" action="pickup_location_action" parent="crm.crm_menu_config" sequence="35"/>
+
     </data>
 </odoo>
 

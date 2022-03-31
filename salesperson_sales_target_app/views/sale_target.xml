@@ -7,7 +7,7 @@
 			<field name="arch" type="xml">
 				<form>
 					<header>
-						<button name="send_mail" string="Send Email" class="oe_highlight" type="object" states="open,closed"/>
+						<!--<button name="send_mail" string="Send Email" class="oe_highlight" type="object" states="open,closed"/>-->
 						<button name="confirm" string="Confirm" class="oe_highlight" type="object" states="draft"/>
 						<button name="close" string="Close" class="oe_highlight" type="object" states="open"/>
 						<button name="cancel" string="Cancel" class="oe_highlight" type="object" states="open,closed"/>
@@ -30,7 +30,9 @@
 								<field name="target" attrs="{'readonly':[('state','!=','draft')],'required':[('state', '=', 'draft')]}"/>
 								<field name="difference" readonly="1"/>
 								<field name="achieve" readonly="1"/>
+								<field name="average" readonly="1"/>
 								<field name="achieve_percentage" widget="progressbar" readonly="1"/>
+								<field name="average_percentage" widget="progressbar" readonly="1"/>
 								<field name="partner_id" invisible="1"/>
 							</group>
 						</group>
@@ -40,14 +42,29 @@
 									<tree editable='bottom'>
 										<field name="reverse_id" invisible='1'/>
 										<field name="salesperson_id" invisible="1"/>
+										<field name="start_date" invisible="1"/>
+										<field name="end_date" invisible="1"/>
 										<field name="product_id"/>
 										<field name="target_quantity"/>
 										<field name="threshold_quantity"/>
 										<field name="achieve_quantity"/>
+										<field name="difference"/>
 										<field name="incentive_unit_product" />
 										<field name="achieve_perc"  widget="progressbar"/>
 										<field name="incentive_pay" />
 									</tree>
+								</field>
+							</page>
+							<page string="Target History" name="target_line_history">
+								<field name="target_history_ids" readonly="1">
+									<tree edit="False" delete="False">
+										<field name="history_id" invisible='1'/>
+										<field name="sale_id" invisible="1"/>
+										<field name="reference" />
+										<field name="product_id" />
+										<field name="date" />
+										<field name="quantity" />
+										</tree>
 								</field>
 							</page>
 						</notebook>
@@ -61,37 +78,40 @@
 			<field name="model">saletarget.saletarget</field>
 			<field name="arch" type="xml">
 				<tree>
+					<field name="sales_staff_id" string="Staff ID"/>
 					<field name="sales_person_id"/>
 					<field name="start_date"/>
 					<field name="end_date"/>
 					<field name="target"/>
 					<field name="difference"/>
 					<field name="achieve"/>
-					<field name="achieve_percentage"/>
+					<field name="average"/>
+					<field name="achieve_percentage" widget="progressbar" />
+					<field name="average_percentage" widget="progressbar" />
 					<field name="state"/>
 				</tree>
 			</field>
 		</record>
-		 <record model="ir.ui.view" id="view_sale_target_graph">
-            <field name="name">saletarget.saletarget.graph</field>
-            <field name="model">saletarget.saletarget</field>
-            <field name="arch" type="xml">
-                <graph string="Sales Target" sample="1">
-                    <field name="sales_person_id"/>
-                    <field name="achieve" type="measure"/>
-                </graph>
-            </field>
-        </record>
-		 <record model="ir.ui.view" id="view_sale_target_pivot">
-            <field name="name">saletarget.saletarget.pivot</field>
-            <field name="model">saletarget.saletarget</field>
-            <field name="arch" type="xml">
-                <pivot string="Sales Target" sample="1">
-                    <field name="sales_person_id" type="row"/>
-                    <field name="achieve" type="measure"/>
-                </pivot>
-            </field>
-        </record>
+		<record model="ir.ui.view" id="view_sale_target_graph">
+			<field name="name">saletarget.saletarget.graph</field>
+			<field name="model">saletarget.saletarget</field>
+			<field name="arch" type="xml">
+				<graph string="Sales Target" sample="1">
+					<field name="sales_person_id"/>
+					<field name="achieve" type="measure"/>
+				</graph>
+			</field>
+		</record>
+		<record model="ir.ui.view" id="view_sale_target_pivot">
+			<field name="name">saletarget.saletarget.pivot</field>
+			<field name="model">saletarget.saletarget</field>
+			<field name="arch" type="xml">
+				<pivot string="Sales Target" sample="1">
+					<field name="sales_person_id" type="row"/>
+					<field name="achieve" type="measure"/>
+				</pivot>
+			</field>
+		</record>
 
 		<record id="sale_target_entry" model="ir.actions.act_window">
 			<field name="name">Sale Target</field>
@@ -100,33 +120,33 @@
 			<field name="view_mode">tree,form,pivot,graph</field>
 		</record>
 
-        <record id="sale_target_action_view_order_tree" model="ir.actions.act_window.view">
-            <field name="sequence" eval="1"/>
-            <field name="view_mode">tree</field>
-            <field name="view_id" ref="salesperson_sales_target_app.sale_target_tree_view"/>
-            <field name="act_window_id" ref="sale_target_entry"/>
-        </record>
+		<record id="sale_target_action_view_order_tree" model="ir.actions.act_window.view">
+			<field name="sequence" eval="1"/>
+			<field name="view_mode">tree</field>
+			<field name="view_id" ref="salesperson_sales_target_app.sale_target_tree_view"/>
+			<field name="act_window_id" ref="sale_target_entry"/>
+		</record>
 
-		  <record id="sale_target_action_view_order_form" model="ir.actions.act_window.view">
-            <field name="sequence" eval="3"/>
-            <field name="view_mode">form</field>
-            <field name="view_id" ref="salesperson_sales_target_app.sale_target_form_view"/>
-            <field name="act_window_id" ref="sale_target_entry"/>
-        </record>
+		<record id="sale_target_action_view_order_form" model="ir.actions.act_window.view">
+			<field name="sequence" eval="3"/>
+			<field name="view_mode">form</field>
+			<field name="view_id" ref="salesperson_sales_target_app.sale_target_form_view"/>
+			<field name="act_window_id" ref="sale_target_entry"/>
+		</record>
 
-		  <record id="sale_target_action_view_order_pivot" model="ir.actions.act_window.view">
-            <field name="sequence" eval="5"/>
-            <field name="view_mode">pivot</field>
-            <field name="view_id" ref="salesperson_sales_target_app.view_sale_target_pivot"/>
-            <field name="act_window_id" ref="sale_target_entry"/>
-        </record>
+		<record id="sale_target_action_view_order_pivot" model="ir.actions.act_window.view">
+			<field name="sequence" eval="5"/>
+			<field name="view_mode">pivot</field>
+			<field name="view_id" ref="salesperson_sales_target_app.view_sale_target_pivot"/>
+			<field name="act_window_id" ref="sale_target_entry"/>
+		</record>
 
-        <record id="sale_target_action_view_order_graph" model="ir.actions.act_window.view">
-            <field name="sequence" eval="6"/>
-            <field name="view_mode">graph</field>
-            <field name="view_id" ref="salesperson_sales_target_app.view_sale_target_graph"/>
-            <field name="act_window_id" ref="sale_target_entry"/>
-        </record>
+		<record id="sale_target_action_view_order_graph" model="ir.actions.act_window.view">
+			<field name="sequence" eval="6"/>
+			<field name="view_mode">graph</field>
+			<field name="view_id" ref="salesperson_sales_target_app.view_sale_target_graph"/>
+			<field name="act_window_id" ref="sale_target_entry"/>
+		</record>
 
 		<menuitem name="Sales Target" id="sale_target_report" parent="sale.sale_order_menu" action="sale_target_entry"/>
 

@@ -11,6 +11,7 @@ class SaleTarget(models.Model):
 
 	name = fields.Char(string='Order Reference', required=True, copy=False, readonly=True, index=True, default=lambda self: _('New'))
 	sales_person_id = fields.Many2one('hr.employee',string="Salesperson")
+	sales_staff_id = fields.Char(related='sales_person_id.employee_number')
 	start_date = fields.Date(string="Start Date")
 	end_date = fields.Date(string="End Date")
 	target_achieve = fields.Selection([('Sale Order Confirm','Sale Order Confirm'),
@@ -19,10 +20,13 @@ class SaleTarget(models.Model):
 								('Invoice Paid','Invoice Paid')],string="Target Achieve")
 	target = fields.Integer(string="Target")
 	difference = fields.Integer(string="Difference",compute="_get_difference",store=True, readonly=True)
+	average = fields.Float(string="Average Achievement", compute="_get_difference", store=True, readonly=True)
 	achieve = fields.Integer(string="Achieve", compute="_compute_sales_target", store=True, readonly=True)
 	achieve_percentage = fields.Integer(string="Achieve Percentage",compute="_get_achieve_percentage", readonly=True)
+	average_percentage = fields.Integer(string="Average Percentage", compute="_get_average_percentage", readonly=True)
 	responsible_salesperson_id = fields.Many2one('res.users',string="Responsible Salesperson")
 	target_line_ids = fields.One2many('targetline.targetline','reverse_id')
+	target_history_ids = fields.One2many('targetline.history', 'history_id')
 	state = fields.Selection([
 			('draft','Draft'),
 			('open', 'Open'),
@@ -44,14 +48,18 @@ class SaleTarget(models.Model):
 		return super(SaleTarget, self).unlink()
 
 	def confirm(self):
-		count=0
+		count = 0
 		for i in self:
 			if i.target <= 0:
 				raise UserError("Target Must be Grater then 0.")
 		for j in self.target_line_ids:
-			count+=j.target_quantity
+			count += j.target_quantity
 			if count > i.target:
 				raise UserError("Target Quantity Must be same as Target or Less.")
+			j.salesperson_id = i.sales_person_id.id
+			j.start_date = i.start_date
+			j.end_date = i.end_date
+			j.salesperson_employee_no = i.sales_staff_id
 		return self.write({'state':'open'})
 
 	def close(self):
@@ -59,7 +67,6 @@ class SaleTarget(models.Model):
 
 	def cancel(self):
 		return self.write({'state':'cancelled'})
-
 
 	@api.depends('target_line_ids','target_line_ids.achieve_quantity')
 	def _compute_sales_target(self):
@@ -70,13 +77,24 @@ class SaleTarget(models.Model):
 	def _get_achieve_percentage(self):
 		for record in self:
 			try:
-				record.achieve_percentage=record.achieve * 100/record.target
+				record.achieve_percentage = record.achieve * 100/record.target
 			except ZeroDivisionError:
 				return record.achieve_percentage
 
-	@api.depends('achieve','target')                   
+	@api.depends('target_line_ids')
+	def _get_average_percentage(self):
+		for rec in self:
+			try:
+				rec.average_percentage = rec.average * 100/len(rec.target_line_ids)
+			except ZeroDivisionError:
+				return rec.average_percentage
+
+	@api.depends('achieve','target','target_line_ids')
 	def _get_difference(self):
-		self.difference=self.target - self.achieve
+		for items in self:
+			items.difference = items.target - items.achieve
+			if items.target_line_ids:
+				items.average = items.achieve / len(items.target_line_ids)
 
 	def send_mail(self):
 		template_id = self.env['ir.model.data'].get_object_reference('salesperson_sales_target_app','sales_person_send_mail')[1]
@@ -93,25 +111,34 @@ class SaleTarget(models.Model):
 
 
 class TargetLine(models.Model):
-	_name="targetline.targetline"
-	_description= "Sales Target Line"
+	_name = "targetline.targetline"
+	_description = "Sales Target Line"
 
 	name = fields.Char(string="Name")
 	salesperson_id = fields.Many2one('hr.employee')
+	salesperson_employee_no = fields.Char('Staff ID')
 	reverse_id = fields.Many2one('saletarget.saletarget')
+	start_date = fields.Date('Start date')
+	end_date = fields.Date('End date')
 	product_id = fields.Many2one('product.product', string="Product", required=True)
 	target_quantity = fields.Integer(string="Target Quantity", required=True)
 	threshold_quantity = fields.Integer(string="Threshold Quantity", required=True)
 	achieve_quantity = fields.Integer(string="Achieve Quantity")
+	difference = fields.Integer(string='Difference', compute="_get_difference")
 	incentive_unit_product = fields.Float(string='Incentive/Unit Product', required=True)
 	achieve_perc = fields.Integer(string="Achieve Percentage", compute="_get_percentage",store=True)
 	incentive_pay = fields.Float(string='Incentives Pay Out', compute='_get_incentive_amount', store=True)
 
-	@api.depends('target_quantity','achieve_quantity')                   
+	@api.depends('target_quantity','achieve_quantity')
+	def _get_difference(self):
+		for lines in self:
+			lines.difference = lines.target_quantity - lines.achieve_quantity
+
+	@api.depends('target_quantity','achieve_quantity')
 	def _get_percentage(self):
 		for temp in self:
 			try:
-				temp.achieve_perc=temp.achieve_quantity * 100/temp.target_quantity
+				temp.achieve_perc = temp.achieve_quantity * 100/temp.target_quantity
 			except ZeroDivisionError:
 				return temp.achieve_perc
 
@@ -126,4 +153,20 @@ class TargetLine(models.Model):
 		for rec in self:
 			if rec.product_id:
 				rec.salesperson_id = rec.reverse_id.sales_person_id.id
+				rec.salesperson_employee_no = rec.reverse_id.sales_person_id.employee_number
+				rec.start_date = rec.reverse_id.start_date
+				rec.end_date = rec.reverse_id.end_date
+
+
+class TargetHistory(models.Model):
+	_name = "targetline.history"
+	_description = "Target Line History"
+
+	name = fields.Char(string="Name")
+	sale_id = fields.Many2one('sale.order')
+	history_id = fields.Many2one('saletarget.saletarget')
+	product_id = fields.Many2one('product.product', string="Product")
+	date = fields.Date('Date')
+	reference = fields.Char('Reference')
+	quantity = fields.Float('Quantity')
 

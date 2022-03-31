@@ -71,8 +71,8 @@
                             </group>
                             <group>
                                 <field name="pick_location_id" options="{&quot;no_open&quot;: True, &quot;no_create&quot;: True}" string="Pick up Location" attrs="{'readonly':[('state','not in',['draft','submitted'])],'required':[('state','=','submitted')]}" />
-                                <field name="card_type" string="Card Type" attrs="{'readonly':[('state','not in',['draft','submitted'])],'required':[('state','=','submitted')]}" />
-                                <field name="prepayment_percentage" string="Prepayment Percent" attrs="{'readonly':[('state','not in',['draft','submitted'])],'required':[('state','=','submitted')]}" />
+                                <field name="card_type" string="Card Type" attrs="{'readonly':[('state','not in',['draft','submitted'])]}" />
+                                <field name="prepayment_percentage" string="Prepayment Percent" attrs="{'readonly':[('state','not in',['draft','submitted'])]}" />
                                 <field name="percent" string="Percentage" attrs="{'readonly':[('state','not in',['draft','submitted'])],'required':[('prepayment_percentage','=','other')],'invisible':[('prepayment_percentage','!=','other')]}" />
                                 <field name="reviewed_by_tl" string="Reviewed by Team Leader" attrs="{'readonly':[('state','not in',['draft','submitted','reviewed'])],'required':[('state','=','reviewed')]}"/>
                                 <field name="reviewed_by_sm" string="Reviewed by Sales Manager" attrs="{'readonly':[('state','not in',['draft','submitted','reviewed'])],'required':[('state','=','reviewed')]}"/>
