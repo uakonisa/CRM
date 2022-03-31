@@ -19,7 +19,7 @@ class SaleOrder(models.Model):
 						for sale_line in salestarget_id.target_line_ids:
 							if order_line.product_id == sale_line.product_id:
 								achieve_quantity = sale_line.achieve_quantity + order_line.product_uom_qty
-								rec.append((0, 0, {'product_id':order_line.product_id.id,'reference': order_line.order_id.origin,'date':order_line.order_id.date_order, 'quantity': order_line.product_uom_qty}))
+								rec.append((0, 0, {'product_id':order_line.product_id.id,'reference': order_line.order_id.name,'date':order_line.order_id.date_order, 'quantity': order_line.product_uom_qty, 'sale_id':order_line.order_id.id}))
 								sale_line.write({'achieve_quantity': achieve_quantity})
 								salestarget_id.write({'target_history_ids': rec})
 					salestarget_id.update({
