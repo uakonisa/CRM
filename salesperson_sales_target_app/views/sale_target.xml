@@ -33,6 +33,7 @@
 								<field name="average" readonly="1"/>
 								<field name="achieve_percentage" widget="progressbar" readonly="1"/>
 								<field name="average_percentage" widget="progressbar" readonly="1"/>
+								<field name="total_points" string="Total Points" readonly="1"/>
 								<field name="partner_id" invisible="1"/>
 							</group>
 						</group>
@@ -88,6 +89,7 @@
 					<field name="difference"/>
 					<field name="achieve"/>
 					<field name="average"/>
+					<field name="total_points" string="Total Points" />
 					<field name="achieve_percentage" widget="progressbar" />
 					<field name="average_percentage" widget="progressbar" />
 					<field name="state"/>
