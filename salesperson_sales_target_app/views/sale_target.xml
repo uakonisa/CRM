@@ -57,7 +57,7 @@
 							</page>
 							<page string="Target History" name="target_line_history">
 								<field name="target_history_ids" readonly="1">
-									<tree edit="False" delete="False">
+									<tree>
 										<field name="history_id" invisible='1'/>
 										<field name="sale_id" invisible="1"/>
 										<field name="reference" />
