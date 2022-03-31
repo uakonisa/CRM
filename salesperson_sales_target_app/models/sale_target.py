@@ -85,7 +85,7 @@ class SaleTarget(models.Model):
 	def _get_average_percentage(self):
 		for rec in self:
 			try:
-				rec.average_percentage = rec.achieve_percentage * 100/len(rec.target_line_ids)
+				rec.average_percentage = sum([line.achieve_percentage for line in record.target_line_ids]) * 100/len(rec.target_line_ids)
 			except ZeroDivisionError:
 				return rec.average_percentage
 
@@ -145,7 +145,7 @@ class TargetLine(models.Model):
 	@api.depends('target_quantity', 'threshold_quantity', 'achieve_quantity', 'incentive_unit_product')
 	def _get_incentive_amount(self):
 		for lines in self:
-			if lines.achieve_quantity > lines.threshold_quantity:
+			if lines.achieve_quantity >= lines.threshold_quantity:
 				lines.incentive_pay = lines.achieve_quantity * lines.incentive_unit_product
 
 	@api.onchange('product_id')
