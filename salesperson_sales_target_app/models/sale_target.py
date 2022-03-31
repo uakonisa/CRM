@@ -85,7 +85,7 @@ class SaleTarget(models.Model):
 	def _get_average_percentage(self):
 		for rec in self:
 			try:
-				rec.average_percentage = sum([line.achieve_percentage for line in rec.target_line_ids]) * 100/len(rec.target_line_ids)
+				rec.average_percentage = sum([line.achieve_perc for line in rec.target_line_ids]) * 100/len(rec.target_line_ids)
 			except ZeroDivisionError:
 				return rec.average_percentage
 
