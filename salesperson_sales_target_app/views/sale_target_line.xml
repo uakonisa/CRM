@@ -21,6 +21,7 @@
 								<field name="target_quantity"/>
 								<field name="threshold_quantity"/>
 								<field name="achieve_quantity"/>
+								<field name="returned_quantity"/>
 								<field name="difference"/>
 								<field name="incentive_unit_product" />
 								<field name="achieve_perc"  widget="progressbar"/>
@@ -45,6 +46,7 @@
 					<field name="target_quantity"/>
 					<field name="threshold_quantity"/>
 					<field name="achieve_quantity"/>
+					<field name="returned_quantity"/>
 					<field name="difference"/>
 					<field name="incentive_unit_product" />
 					<field name="incentive_pay" />
@@ -109,6 +111,23 @@
 			<field name="view_mode">graph</field>
 			<field name="view_id" ref="salesperson_sales_target_app.view_sale_target_line_graph"/>
 			<field name="act_window_id" ref="sale_target_line_entry"/>
+		</record>
+
+			<record id="view_sales_target_line_filter" model="ir.ui.view">
+			<field name="name">sale.target.line.list.select</field>
+			<field name="model">targetline.targetline</field>
+			<field name="priority" eval="15"/>
+			<field name="arch" type="xml">
+				<search string="Search Sales Target Line">
+					<field name="salesperson_employee_no" string="Staff ID" />
+					<field name="salesperson_id" />
+					<field name="product_id"/>
+					<group expand="0" string="Group By">
+						<filter string="Salesperson" name="salesperson_id" domain="[]" context="{'group_by': 'salesperson_id'}"/>
+						<filter string="Product" name="product_id" domain="[]" context="{'group_by': 'product_id'}"/>
+					</group>
+				</search>
+			</field>
 		</record>
 
 		<menuitem name="Target Lines" id="sale_target_line_report" parent="sale.sale_order_menu" action="sale_target_line_entry" sequence="50"/>

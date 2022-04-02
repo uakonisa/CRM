@@ -5,6 +5,13 @@ from datetime import datetime,date
 from odoo.exceptions import UserError
 
 
+class InheritProduct(models.Model):
+	_inherit = 'product.template'
+
+	points = fields.Float(string='Points on Target Achievement')
+	incentive_pay = fields.Float(string='Incentive Pay')
+
+
 class SaleTarget(models.Model):
 	_name = "saletarget.saletarget"
 	_description = "Sales Target"
@@ -49,18 +56,13 @@ class SaleTarget(models.Model):
 		return super(SaleTarget, self).unlink()
 
 	def confirm(self):
-		count = 0
-		for i in self:
-			if i.target <= 0:
-				raise UserError("Target Must be Grater then 0.")
+		for record in self:
+			record.target = sum([line.target_quantity for line in record.target_line_ids])
 		for j in self.target_line_ids:
-			count += j.target_quantity
-			if count > i.target:
-				raise UserError("Target Quantity Must be same as Target or Less.")
-			j.salesperson_id = i.sales_person_id.id
-			j.start_date = i.start_date
-			j.end_date = i.end_date
-			j.salesperson_employee_no = i.sales_staff_id
+			j.salesperson_id = record.sales_person_id.id
+			j.start_date = record.start_date
+			j.end_date = record.end_date
+			j.salesperson_employee_no = record.sales_staff_id
 		return self.write({'state':'open'})
 
 	def close(self):
@@ -131,16 +133,17 @@ class TargetLine(models.Model):
 	threshold_quantity = fields.Integer(string="Threshold Quantity", required=True)
 	achieve_quantity = fields.Integer(string="Achieve Quantity")
 	difference = fields.Integer(string='Difference', compute="_get_difference")
-	incentive_unit_product = fields.Float(string='Incentive/Unit Product', required=True)
+	returned_quantity = fields.Integer(string='Returned Quantity')
+	incentive_unit_product = fields.Float(related='product_id.incentive_pay', string='Incentive/Unit Product', store=True)
 	achieve_perc = fields.Integer(string="Achieve Percentage", compute="_get_percentage",store=True)
 	incentive_pay = fields.Float(string='Incentives Pay Out', compute='_get_incentive_amount', store=True)
 	points = fields.Float(string='Points', compute='_get_incentive_amount', store=True)
-	points_per_products = fields.Float(string='Points/Unit Product', required=True)
+	points_per_products = fields.Float(related='product_id.points', string='Points/Unit Product', store=True)
 
-	@api.depends('target_quantity','achieve_quantity')
+	@api.depends('target_quantity','achieve_quantity','returned_quantity')
 	def _get_difference(self):
 		for lines in self:
-			lines.difference = lines.target_quantity - lines.achieve_quantity
+			lines.difference = (lines.target_quantity - lines.achieve_quantity) + lines.returned_quantity
 
 	@api.depends('target_quantity','achieve_quantity')
 	def _get_percentage(self):
