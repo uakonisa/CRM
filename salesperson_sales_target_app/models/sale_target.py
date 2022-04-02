@@ -143,7 +143,10 @@ class TargetLine(models.Model):
 	@api.depends('target_quantity','achieve_quantity','returned_quantity')
 	def _get_difference(self):
 		for lines in self:
-			lines.difference = (lines.target_quantity - lines.achieve_quantity) + lines.returned_quantity
+			if lines.difference:
+				lines.difference = (lines.target_quantity - lines.achieve_quantity) + lines.returned_quantity
+			if lines.returned_quantity:
+				lines.update({'achieve_quantity': lines.achieve_quantity - lines.returned_quantity})
 
 	@api.depends('target_quantity','achieve_quantity')
 	def _get_percentage(self):
