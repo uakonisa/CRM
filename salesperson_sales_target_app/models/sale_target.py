@@ -145,8 +145,6 @@ class TargetLine(models.Model):
 		for lines in self:
 			if lines.difference:
 				lines.difference = (lines.target_quantity - lines.achieve_quantity) + lines.returned_quantity
-			if lines.returned_quantity:
-				lines.update({'achieve_quantity': lines.achieve_quantity - lines.returned_quantity})
 
 	@api.depends('target_quantity','achieve_quantity')
 	def _get_percentage(self):
@@ -156,7 +154,7 @@ class TargetLine(models.Model):
 			except ZeroDivisionError:
 				return temp.achieve_perc
 
-	@api.depends('target_quantity', 'threshold_quantity', 'achieve_quantity', 'incentive_unit_product','points_per_products','returned_quantity')
+	@api.depends('target_quantity', 'threshold_quantity', 'achieve_quantity', 'incentive_unit_product','points_per_products')
 	def _get_incentive_amount(self):
 		for lines in self:
 			if lines.achieve_quantity >= lines.threshold_quantity:
