@@ -10,6 +10,19 @@
                     <field name="points"/>
                     <field name="incentive_pay"/>
                 </xpath>
+				<xpath expr="//notebook" position="inside">
+					<page name="saletarget" string="Sales Target">
+						<field name="saletarget_config_ids" nolabel="1">
+							<tree editable="bottom">
+								<field name="job_position" />
+								<field name="target" />
+								<field name="threshold_percent" />
+								<field name="threshold_quantity" />
+							</tree>
+						</field>
+					</page>
+
+				</xpath>
             </field>
         </record>
 		<record model="ir.ui.view" id="sale_target_form_view">

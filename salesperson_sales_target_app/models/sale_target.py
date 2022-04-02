@@ -10,6 +10,22 @@ class InheritProduct(models.Model):
 
 	points = fields.Float(string='Points on Target Achievement')
 	incentive_pay = fields.Float(string='Incentive Pay')
+	saletarget_config_ids = fields.One2many('saletarget.config', 'target_id')
+
+
+class ConfigSaleTarget(models.Model):
+	_name = 'saletarget.config'
+
+	target_id = fields.Many2one('product.product', 'Target')
+	job_position = fields.Many2one('hr.job', string='Designation', store=True, required=True)
+	target = fields.Integer('Target Value', store=True, required=True)
+	threshold_percent = fields.Integer('Threshold %', store=True, required=True)
+	threshold_quantity = fields.Integer('Threshold Quantity', compute='_get_quantity', store=True, required=True)
+
+	@api.depends('target','threshold_percent')
+	def _get_quantity(self):
+		for lines in self:
+			lines.threshold_quantity = round(lines.target * lines.threshold_percent)/100
 
 
 class SaleTarget(models.Model):
@@ -143,8 +159,7 @@ class TargetLine(models.Model):
 	@api.depends('target_quantity','achieve_quantity','returned_quantity')
 	def _get_difference(self):
 		for lines in self:
-			if lines.difference:
-				lines.difference = (lines.target_quantity - lines.achieve_quantity) + lines.returned_quantity
+			lines.difference = (lines.target_quantity - lines.achieve_quantity) + lines.returned_quantity
 
 	@api.depends('target_quantity','achieve_quantity')
 	def _get_percentage(self):
@@ -154,13 +169,22 @@ class TargetLine(models.Model):
 			except ZeroDivisionError:
 				return temp.achieve_perc
 
-	@api.depends('target_quantity', 'threshold_quantity', 'achieve_quantity', 'incentive_unit_product','points_per_products')
+	@api.depends('target_quantity', 'threshold_quantity', 'achieve_quantity', 'incentive_unit_product','points_per_products','returned_quantity')
 	def _get_incentive_amount(self):
 		for lines in self:
+			# returned = lines.returned_quantity
+			# print(returned)
+			# if lines.returned_quantity:
+			# 	print(lines.returned_quantity)
+			# 	lines.achieve_quantity = (lines.achieve_quantity - (lines.returned_quantity - returned))
 			if lines.achieve_quantity >= lines.threshold_quantity:
 				lines.incentive_pay = lines.achieve_quantity * lines.incentive_unit_product
+			else:
+				lines.incentive_pay = 0.0
 			if lines.achieve_quantity >= lines.target_quantity:
 				lines.points = lines.points_per_products
+			else:
+				lines.points = 0.0
 
 	@api.onchange('product_id')
 	def get_salesperson(self):
@@ -170,6 +194,11 @@ class TargetLine(models.Model):
 				rec.salesperson_employee_no = rec.reverse_id.sales_person_id.employee_number
 				rec.start_date = rec.reverse_id.start_date
 				rec.end_date = rec.reverse_id.end_date
+				if rec.product_id.saletarget_config_ids:
+					for lines in rec.product_id.saletarget_config_ids:
+						if rec.salesperson_id.job_id.id == lines.job_position.id:
+							rec.target_quantity = lines.target
+							rec.threshold_quantity = lines.threshold_percent
 
 
 class TargetHistory(models.Model):
