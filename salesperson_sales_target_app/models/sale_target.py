@@ -156,7 +156,7 @@ class TargetLine(models.Model):
 			except ZeroDivisionError:
 				return temp.achieve_perc
 
-	@api.depends('target_quantity', 'threshold_quantity', 'achieve_quantity', 'incentive_unit_product','points_per_products')
+	@api.depends('target_quantity', 'threshold_quantity', 'achieve_quantity', 'incentive_unit_product','points_per_products','returned_quantity')
 	def _get_incentive_amount(self):
 		for lines in self:
 			if lines.achieve_quantity >= lines.threshold_quantity:
