@@ -10,6 +10,7 @@ class EmployeeInherit(models.Model):
     _inherit = 'hr.employee'
 
     employee_number = fields.Char('Employee Number')
+    supervisor = fields.Many2one('hr.employee', 'Supervisor')
 
 
 class ResPartner(models.Model):

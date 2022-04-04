@@ -20,6 +20,9 @@
                 <xpath expr="//field[@name='mobile_phone']" position="before">
                     <field name="employee_number" />
                 </xpath>
+                <xpath expr="//field[@name='parent_id']" position="after">
+                    <field name="supervisor"/>
+                </xpath>
             </field>
         </record>
 

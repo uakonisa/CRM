@@ -11,6 +11,8 @@
 							<group>
 								<field name="salesperson_employee_no"/>
 								<field name="salesperson_id" />
+								<field name="manager_id" string="Manager"/>
+								<field name="supervisor_id" string="Supervisor"/>
 								<field name="product_id"/>
 								<field name="start_date" />
 								<field name="start_date" />
@@ -40,6 +42,8 @@
 				<tree>
 					<field name="salesperson_employee_no"/>
 					<field name="salesperson_id"/>
+					<field name="manager_id" string="Manager"/>
+					<field name="supervisor_id" string="Supervisor"/>
 					<field name="start_date"/>
 					<field name="end_date"/>
 					<field name="product_id"/>
@@ -113,7 +117,7 @@
 			<field name="act_window_id" ref="sale_target_line_entry"/>
 		</record>
 
-			<record id="view_sales_target_line_filter" model="ir.ui.view">
+		<record id="view_sales_target_line_filter" model="ir.ui.view">
 			<field name="name">sale.target.line.list.select</field>
 			<field name="model">targetline.targetline</field>
 			<field name="priority" eval="15"/>

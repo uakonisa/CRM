@@ -2,14 +2,14 @@
 <odoo>
 	<data>
 		<record model="ir.ui.view" id="view_product_template_inh">
-            <field name="name">template.product.inherit</field>
-            <field name="model">product.template</field>
-            <field name="inherit_id" ref="product.product_template_only_form_view"/>
-            <field name="arch" type="xml">
-                <xpath expr="//field[@name='barcode']" position="after">
-                    <field name="points"/>
-                    <field name="incentive_pay"/>
-                </xpath>
+			<field name="name">template.product.inherit</field>
+			<field name="model">product.template</field>
+			<field name="inherit_id" ref="product.product_template_only_form_view"/>
+			<field name="arch" type="xml">
+				<xpath expr="//field[@name='barcode']" position="after">
+					<field name="points"/>
+					<field name="incentive_pay"/>
+				</xpath>
 				<xpath expr="//notebook" position="inside">
 					<page name="saletarget" string="Sales Target">
 						<field name="saletarget_config_ids" nolabel="1">
@@ -23,8 +23,8 @@
 					</page>
 
 				</xpath>
-            </field>
-        </record>
+			</field>
+		</record>
 		<record model="ir.ui.view" id="sale_target_form_view">
 			<field name="name">Sale Target</field>
 			<field name="model">saletarget.saletarget</field>
@@ -47,6 +47,8 @@
 							<group>
 								<field name="sales_person_id" attrs="{'readonly':[('state','!=','draft')],'required':[('state', '=', 'draft')]}" />
 								<field name="sales_staff_id" attrs="{'readonly':[('state','!=','draft')]}" string="Staff ID"/>
+								<field name="manager_id" attrs="{'readonly':[('state','!=','draft')]}" string="Manager"/>
+								<field name="supervisor_id" attrs="{'readonly':[('state','!=','draft')]}" string="Supervisor"/>
 								<field name="start_date" attrs="{'readonly':[('state','!=','draft')],'required':[('state', '=', 'draft')]}"/>
 								<field name="end_date" attrs="{'readonly':[('state','!=','draft')],'required':[('state', '=', 'draft')]}"/>
 								<field name="target_achieve" attrs="{'readonly':[('state','!=','draft')],'invisible':[('achieve','=',0)]}"/>
@@ -68,6 +70,8 @@
 									<tree editable='bottom'>
 										<field name="reverse_id" invisible='1'/>
 										<field name="salesperson_id" invisible="1"/>
+										<field name="manager_id" invisible="1"/>
+										<field name="supervisor_id" invisible="1"/>
 										<field name="start_date" invisible="1"/>
 										<field name="end_date" invisible="1"/>
 										<field name="product_id"/>
@@ -109,6 +113,8 @@
 				<tree>
 					<field name="sales_staff_id" string="Staff ID"/>
 					<field name="sales_person_id"/>
+					<field name="manager_id" string="Manager"/>
+					<field name="supervisor_id" string="Supervisor"/>
 					<field name="start_date"/>
 					<field name="end_date"/>
 					<field name="target"/>

@@ -35,6 +35,8 @@ class SaleTarget(models.Model):
 	name = fields.Char(string='Order Reference', required=True, copy=False, readonly=True, index=True, default=lambda self: _('New'))
 	sales_person_id = fields.Many2one('hr.employee',string="Salesperson")
 	sales_staff_id = fields.Char(related='sales_person_id.employee_number')
+	manager_id = fields.Many2one(related='sales_person_id.parent_id')
+	supervisor_id = fields.Many2one(related='sales_person_id.supervisor')
 	start_date = fields.Date(string="Start Date")
 	end_date = fields.Date(string="End Date")
 	target_achieve = fields.Selection([('Sale Order Confirm','Sale Order Confirm'),
@@ -79,6 +81,8 @@ class SaleTarget(models.Model):
 			j.start_date = record.start_date
 			j.end_date = record.end_date
 			j.salesperson_employee_no = record.sales_staff_id
+			j.manager_id = record.manager_id
+			j.supervisor_id = record.supervisor_id
 		return self.write({'state':'open'})
 
 	def close(self):
@@ -140,6 +144,8 @@ class TargetLine(models.Model):
 
 	name = fields.Char(string="Name")
 	salesperson_id = fields.Many2one('hr.employee')
+	manager_id = fields.Many2one('hr.employee')
+	supervisor_id = fields.Many2one('hr.employee')
 	salesperson_employee_no = fields.Char('Staff ID')
 	reverse_id = fields.Many2one('saletarget.saletarget')
 	start_date = fields.Date('Start date')
