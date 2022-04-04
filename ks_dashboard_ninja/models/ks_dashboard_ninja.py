@@ -448,10 +448,11 @@ class KsDashboardNinjaBoard(models.Model):
             self = self.with_context(ksDateFilterSelection=ks_date_filter_selection)
             self = self.with_context(ksIsDefultCustomDateFilter=True)
 
-        if ks_date_filter_selection not in ['l_custom', 'l_none']:
-            ks_date_data = ks_get_date(ks_date_filter_selection, self, 'datetime')
-            self = self.with_context(ksDateFilterStartDate=ks_date_data["selected_start_date"])
-            self = self.with_context(ksDateFilterEndDate=ks_date_data["selected_end_date"])
+        # if ks_date_filter_selection not in ['l_custom', 'l_none']:
+        #     ks_date_data = ks_get_date(ks_date_filter_selection, self, 'datetime')
+        #     print(ks_date_data)
+        #     self = self.with_context(ksDateFilterStartDate=ks_date_data["selected_start_date"])
+        #     self = self.with_context(ksDateFilterEndDate=ks_date_data["selected_end_date"])
 
         return self
 
