@@ -46,7 +46,7 @@ class SaleTarget(models.Model):
 	average = fields.Float(string="Average Achievement", compute="_get_difference", store=True, readonly=True)
 	total_points = fields.Float(string="Total Points", compute="_get_points", store=True, readonly=True)
 	achieve = fields.Integer(string="Achieve", compute="_compute_sales_target", store=True, readonly=True)
-	achieve_percentage = fields.Integer(string="Achieve Percentage",compute="_get_achieve_percentage", readonly=True)
+	achieve_percentage = fields.Integer(string="Overall Achievement",compute="_get_achieve_percentage", readonly=True)
 	average_percentage = fields.Integer(string="Average Percentage", compute="_get_average_percentage", readonly=True)
 	responsible_salesperson_id = fields.Many2one('res.users',string="Responsible Salesperson")
 	target_line_ids = fields.One2many('targetline.targetline','reverse_id')
