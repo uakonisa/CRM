@@ -969,12 +969,12 @@ class KsDashboardNinjaItems(models.Model):
                     selected_start_date = ks_convert_into_local(selected_start_date, ks_timezone)
                     selected_end_date = ks_convert_into_local(selected_end_date, ks_timezone)
 
-                # if self._context.get('ksDateFilterSelection', False) and self._context['ksDateFilterSelection'] not in [
-                #     'l_none', 'l_custom']:
-                #     ks_date_data = ks_get_date(self._context.get('ksDateFilterSelection'), self,
-                #                                rec.ks_date_filter_field.ttype)
-                #     selected_start_date = ks_date_data["selected_start_date"]
-                #     selected_end_date = ks_date_data["selected_end_date"]
+                if self._context.get('ksDateFilterSelection', False) and self._context['ksDateFilterSelection'] not in [
+                    'l_none', 'l_custom']:
+                    ks_date_data = ks_get_date(self._context.get('ksDateFilterSelection'), self,
+                                               rec.ks_date_filter_field.ttype)
+                    selected_start_date = ks_date_data["selected_start_date"]
+                    selected_end_date = ks_date_data["selected_end_date"]
 
                 if selected_end_date and not selected_start_date:
                     ks_date_domain = [
@@ -2346,10 +2346,10 @@ class KsDashboardNinjaItems(models.Model):
         for rec in self:
             if (not rec.ks_date_filter_selection) or rec.ks_date_filter_selection == "l_none":
                 rec.ks_item_start_date = rec.ks_item_end_date = False
-            # elif rec.ks_date_filter_selection != 'l_custom':
-            #     ks_date_data = ks_get_date(rec.ks_date_filter_selection, self, rec.ks_date_filter_field.ttype)
-            #     rec.ks_item_start_date = ks_date_data["selected_start_date"]
-            #     rec.ks_item_end_date = ks_date_data["selected_end_date"]
+            elif rec.ks_date_filter_selection != 'l_custom':
+                ks_date_data = ks_get_date(rec.ks_date_filter_selection, self, rec.ks_date_filter_field.ttype)
+                rec.ks_item_start_date = ks_date_data["selected_start_date"]
+                rec.ks_item_end_date = ks_date_data["selected_end_date"]
 
     @api.depends('ks_dashboard_item_type', 'ks_goal_enable', 'ks_standard_goal_value', 'ks_record_count',
                  'ks_record_count_2', 'ks_previous_period', 'ks_compare_period', 'ks_year_period',
