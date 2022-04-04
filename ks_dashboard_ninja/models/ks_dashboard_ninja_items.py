@@ -969,12 +969,12 @@ class KsDashboardNinjaItems(models.Model):
                     selected_start_date = ks_convert_into_local(selected_start_date, ks_timezone)
                     selected_end_date = ks_convert_into_local(selected_end_date, ks_timezone)
 
-                if self._context.get('ksDateFilterSelection', False) and self._context['ksDateFilterSelection'] not in [
-                    'l_none', 'l_custom']:
-                    ks_date_data = ks_get_date(self._context.get('ksDateFilterSelection'), self,
-                                               rec.ks_date_filter_field.ttype)
-                    selected_start_date = ks_date_data["selected_start_date"]
-                    selected_end_date = ks_date_data["selected_end_date"]
+                # if self._context.get('ksDateFilterSelection', False) and self._context['ksDateFilterSelection'] not in [
+                #     'l_none', 'l_custom']:
+                #     ks_date_data = ks_get_date(self._context.get('ksDateFilterSelection'), self,
+                #                                rec.ks_date_filter_field.ttype)
+                #     selected_start_date = ks_date_data["selected_start_date"]
+                #     selected_end_date = ks_date_data["selected_end_date"]
 
                 if selected_end_date and not selected_start_date:
                     ks_date_domain = [
