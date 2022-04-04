@@ -1,0 +1,6 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_sale_criteria,sale.criteria,model_sale_criteria,,1,1,1,1
+access_criteria_lines,criteria.lines,model_criteria_lines,,1,1,1,1
+access_sale_pool,sale.pool,model_sale_pool,,1,1,1,1
+access_sale_competition,sale.competition,model_sale_competition,,1,1,1,1
+access_competition_lines,competition.lines,model_competition_lines,,1,1,1,1
