@@ -47,8 +47,8 @@
 							<group>
 								<field name="sales_person_id" attrs="{'readonly':[('state','!=','draft')],'required':[('state', '=', 'draft')]}" />
 								<field name="sales_staff_id" attrs="{'readonly':[('state','!=','draft')]}" string="Staff ID"/>
-								<field name="manager_id" attrs="{'readonly':[('state','!=','draft')]}" string="Manager"/>
-								<field name="supervisor_id" attrs="{'readonly':[('state','!=','draft')]}" string="Supervisor"/>
+								<field name="manager_id" readonly="1" string="Sales Officer"/>
+								<field name="supervisor_id" readonly="1" string="Manager"/>
 								<field name="start_date" attrs="{'readonly':[('state','!=','draft')],'required':[('state', '=', 'draft')]}"/>
 								<field name="end_date" attrs="{'readonly':[('state','!=','draft')],'required':[('state', '=', 'draft')]}"/>
 								<field name="target_achieve" attrs="{'readonly':[('state','!=','draft')],'invisible':[('achieve','=',0)]}"/>
@@ -113,8 +113,8 @@
 				<tree>
 					<field name="sales_staff_id" string="Staff ID"/>
 					<field name="sales_person_id"/>
-					<field name="manager_id" string="Manager"/>
-					<field name="supervisor_id" string="Supervisor"/>
+					<field name="manager_id" string="Sales Officer"/>
+					<field name="supervisor_id" string="Manager"/>
 					<field name="start_date"/>
 					<field name="end_date"/>
 					<field name="target"/>

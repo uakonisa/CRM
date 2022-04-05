@@ -11,8 +11,8 @@
 							<group>
 								<field name="salesperson_employee_no"/>
 								<field name="salesperson_id" />
-								<field name="manager_id" string="Manager"/>
-								<field name="supervisor_id" string="Supervisor"/>
+								<field name="manager_id" string="Sales Officer" readonly="1"/>
+								<field name="supervisor_id" string="Manager" readonly="1"/>
 								<field name="product_id"/>
 								<field name="start_date" />
 								<field name="start_date" />
@@ -42,8 +42,8 @@
 				<tree>
 					<field name="salesperson_employee_no"/>
 					<field name="salesperson_id"/>
-					<field name="manager_id" string="Manager"/>
-					<field name="supervisor_id" string="Supervisor"/>
+					<field name="manager_id" string="Sales Officer" />
+					<field name="supervisor_id" string="Manager" />
 					<field name="start_date"/>
 					<field name="end_date"/>
 					<field name="product_id"/>

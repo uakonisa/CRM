@@ -36,7 +36,7 @@ class SaleTarget(models.Model):
 	sales_person_id = fields.Many2one('hr.employee',string="Salesperson")
 	sales_staff_id = fields.Char(related='sales_person_id.employee_number')
 	manager_id = fields.Many2one(related='sales_person_id.parent_id')
-	supervisor_id = fields.Many2one(related='sales_person_id.supervisor')
+	supervisor_id = fields.Many2one(related='manager_id.parent_id')
 	start_date = fields.Date(string="Start Date")
 	end_date = fields.Date(string="End Date")
 	target_achieve = fields.Selection([('Sale Order Confirm','Sale Order Confirm'),
@@ -81,8 +81,8 @@ class SaleTarget(models.Model):
 			j.start_date = record.start_date
 			j.end_date = record.end_date
 			j.salesperson_employee_no = record.sales_staff_id
-			j.manager_id = record.manager_id
-			j.supervisor_id = record.supervisor_id
+			j.manager_id = record.manager_id.id
+			j.supervisor_id = record.manager_id.manager_id.id
 		return self.write({'state':'open'})
 
 	def close(self):
