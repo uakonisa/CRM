@@ -121,6 +121,11 @@
 						<button name="button_get_report" string="Generate Report" class="oe_highlight" type="object" />
 					</header>
 					<sheet>
+						<div class="oe_title">
+							<h1>
+								<field name="name" readonly="1"/>
+							</h1>
+						</div>
 						<group>
 							<group>
 								<label for="date_start"/>
@@ -135,10 +140,16 @@
 							</group>
 
 						</group>
-						<field name="competition_line_ids">
+						<field name="competition_line_ids" readonly="1">
 							<tree editable='bottom'>
 								<field name="competition_id" invisible="1"/>
+								<field name="date"/>
+								<field name="staff_id"/>
 								<field name="salesperson"/>
+								<field name="staff_job"/>
+								<field name="achieve_quantity"/>
+								<field name="target_quantity"/>
+								<field name="overall_percent"/>
 								<field name="pool_id"/>
 								<field name="no_of_wins"/>
 							</tree>
@@ -153,8 +164,9 @@
 			<field name="model">sale.competition</field>
 			<field name="arch" type="xml">
 				<tree string="Competition Report">
-					<field name="date_start"/>
-					<field name="date_end"/>
+					<field name="name"/>
+					<field name="date_start" string="Start Date"/>
+					<field name="date_end" string="End Date"/>
 					<field name="report_type"/>
 				</tree>
 			</field>
@@ -166,7 +178,61 @@
 			<field name="view_mode">tree,form</field>
 		</record>
 
-		<menuitem name="Competition Report" id="sale_competition_menu" parent="sale.sale_order_menu" action="sale_competition_action" sequence="15"/>
+		<menuitem name="Competition Report" id="sale_competition_menu" parent="sale.sale_order_menu" action="sale_competition_action" sequence="45"/>
+
+		<!-- Competition lines view -->
+
+		<record model="ir.ui.view" id="sale_competition_line_form_view">
+			<field name="name">Competition Lines</field>
+			<field name="model">competition.lines</field>
+			<field name="arch" type="xml">
+				<form string="Competition Lines">
+					<sheet>
+						<group>
+							<group>
+								<field name="date"/>
+								<field name="staff_id"/>
+								<field name="salesperson"/>
+								<field name="staff_job"/>
+							</group>
+							<group>
+								<field name="achieve_quantity"/>
+								<field name="target_quantity"/>
+								<field name="overall_percent"/>
+								<field name="pool_id"/>
+								<field name="no_of_wins"/>
+							</group>
+						</group>
+					</sheet>
+				</form>
+			</field>
+		</record>
+
+		<record model="ir.ui.view" id="sale_competition_line_tree_view">
+			<field name="name">Competition Lines</field>
+			<field name="model">competition.lines</field>
+			<field name="arch" type="xml">
+				<tree string="Competition Lines">
+					<field name="date"/>
+					<field name="staff_id"/>
+					<field name="salesperson"/>
+					<field name="staff_job"/>
+					<field name="achieve_quantity"/>
+					<field name="target_quantity"/>
+					<field name="overall_percent"/>
+					<field name="pool_id"/>
+					<field name="no_of_wins"/>
+				</tree>
+			</field>
+		</record>
+
+		<record id="sale_competition_line_action" model="ir.actions.act_window">
+			<field name="name">Competition Lines Report</field>
+			<field name="res_model">competition.lines</field>
+			<field name="view_mode">tree,form</field>
+		</record>
+
+		<menuitem name="Competition Lines" id="sale_competition_line_menu" parent="sale.sale_order_menu" action="sale_competition_line_action" sequence="50"/>
 
 	</data>
 </odoo>

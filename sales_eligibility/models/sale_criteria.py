@@ -3,6 +3,7 @@ from __future__ import division
 from odoo import models, fields, api, _
 from datetime import datetime,date
 from odoo.exceptions import UserError
+from datetime import date, datetime, timedelta
 
 
 class PoolSale(models.Model):
@@ -68,13 +69,55 @@ class SaleCompetition(models.Model):
 	_name = 'sale.competition'
 	_description = 'Sales Competition'
 
+	name = fields.Char(string='Order Reference', required=True, copy=False, readonly=True, index=True, default=lambda self: _('New'))
 	date_start = fields.Date('Duration')
 	date_end = fields.Date('End Date')
 	report_type = fields.Selection([('daily','Daily'),('weekly','Weekly')], default='daily')
 	competition_line_ids = fields.One2many('competition.lines', 'competition_id')
 
+	@api.model
+	def create(self, vals):
+		if vals.get('name', _('New')) == _('New'):
+			vals['name'] = self.env['ir.sequence'].next_by_code('competition.sequence') or _('New')
+		result = super(SaleCompetition, self).create(vals)
+		return result
+
 	def button_get_report(self):
-		print('Enter')
+		self.competition_line_ids = False
+		if self.report_type == 'daily':
+			d1 = self.date_start
+			d2 = self.date_end
+			difference_days = (d2 - d1).days + 1
+			count = -1
+			for record in range(difference_days):
+				count += 1
+				sale_agents = []
+				date = self.date_start + timedelta(days=count)
+				lines = self.env['saletarget.saletarget'].search([('state','in',['draft','open']),('start_date','=',date)])
+				if lines:
+					for i in lines:
+						if i.sales_person_id.id not in sale_agents:
+							sale_agents.append(i.sales_person_id.id)
+						for record in sale_agents:
+							sp_lines = lines.filtered(lambda x:x.sales_person_id.id == record)
+							so_lines = self.env['targetline.targetline'].search([('reverse_id','in',[rec.id for rec in sp_lines])])
+							achieve_qty = 0
+							target_qty = 0
+							pool = False
+							for items in so_lines:
+								achieve_qty += items.achieve_quantity
+								target_qty += items.target_quantity
+							if target_qty:
+								percent = round((achieve_qty * 100) / target_qty)
+								pool = self.env['sale.pool'].search([('percentage_in', '<=', percent),('percentage_out', '>=', percent)])
+						self.env['competition.lines'].create({
+							'competition_id': self.id, 'date': date,
+							'salesperson': self.env['hr.employee'].search([('id','=',record)]).id,
+							'achieve_quantity': achieve_qty,
+							'target_quantity': target_qty,
+							'overall_percent': percent,
+							'pool_id': pool[0].id if len(pool) > 1 else pool.id,
+							'no_of_wins': 1 if pool else False})
 
 
 class LinesCompetition(models.Model):
@@ -82,6 +125,12 @@ class LinesCompetition(models.Model):
 	_description = 'Competition Lines'
 
 	competition_id = fields.Many2one('sale.competition')
+	date = fields.Date('Achievement Date')
 	salesperson = fields.Many2one('hr.employee',string='Staff')
+	staff_id = fields.Char(related='salesperson.employee_number')
+	staff_job = fields.Many2one(related='salesperson.job_id')
 	pool_id = fields.Many2one('sale.pool')
-	no_of_wins = fields.Integer('# of win')
+	overall_percent = fields.Integer('Overall %')
+	achieve_quantity = fields.Integer('Achieve Quantity')
+	target_quantity = fields.Integer('Target Quantity')
+	no_of_wins = fields.Integer('No. of wins')

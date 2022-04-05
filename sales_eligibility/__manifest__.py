@@ -10,7 +10,7 @@
     'depends': ['base','sale_management','purchase','stock','hr','product'],
     'data': [
         'security/ir.model.access.csv',
-        # 'data/sequence.xml',
+        'data/sequence.xml',
         'views/sale_criteria.xml'
     ],
     'qweb' : [],
