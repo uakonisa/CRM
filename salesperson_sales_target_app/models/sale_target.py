@@ -82,8 +82,11 @@ class SaleTarget(models.Model):
 			j.end_date = record.end_date
 			j.salesperson_employee_no = record.sales_staff_id
 			j.manager_id = record.manager_id.id
-			j.supervisor_id = record.manager_id.manager_id.id
+			j.supervisor_id = record.manager_id.parent_id.id
 		return self.write({'state':'open'})
+
+	def set_draft(self):
+		return self.write({'state':'draft'})
 
 	def close(self):
 		return self.write({'state':'closed'})
