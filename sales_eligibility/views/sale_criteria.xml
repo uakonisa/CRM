@@ -78,7 +78,7 @@
 							<tree editable='bottom'>
 								<field name="line_ids" invisible="1"/>
 								<field name="product_id" string="Product" />
-								<field name="target_quantity"/>
+								<!--<field name="target_quantity"/>-->
 								<field name="sale_percentage"/>
 							</tree>
 						</field>
@@ -147,9 +147,9 @@
 								<field name="staff_id"/>
 								<field name="salesperson"/>
 								<field name="staff_job"/>
-								<field name="achieve_quantity"/>
+								<!--<field name="achieve_quantity"/>
 								<field name="target_quantity"/>
-								<field name="overall_percent"/>
+								--><field name="overall_percent" string="Overall Ratio"/>
 								<field name="pool_id"/>
 								<field name="no_of_wins"/>
 							</tree>
@@ -178,7 +178,7 @@
 			<field name="view_mode">tree,form</field>
 		</record>
 
-		<menuitem name="Competition Report" id="sale_competition_menu" parent="sale.sale_order_menu" action="sale_competition_action" sequence="45"/>
+		<menuitem name="Competition Report" id="sale_competition_menu" parent="sale.menu_sale_report" action="sale_competition_action" sequence="10"/>
 
 		<!-- Competition lines view -->
 
@@ -196,9 +196,9 @@
 								<field name="staff_job"/>
 							</group>
 							<group>
-								<field name="achieve_quantity"/>
-								<field name="target_quantity"/>
-								<field name="overall_percent"/>
+								<!--<field name="achieve_quantity"/>
+								<field name="target_quantity"/>-->
+								<field name="overall_percent" string="Overall Ratio"/>
 								<field name="pool_id"/>
 								<field name="no_of_wins"/>
 							</group>
@@ -217,9 +217,9 @@
 					<field name="staff_id"/>
 					<field name="salesperson"/>
 					<field name="staff_job"/>
-					<field name="achieve_quantity"/>
-					<field name="target_quantity"/>
-					<field name="overall_percent"/>
+				<!--	<field name="achieve_quantity"/>
+					<field name="target_quantity"/>-->
+					<field name="overall_percent" string="Overall Ration"/>
 					<field name="pool_id"/>
 					<field name="no_of_wins"/>
 				</tree>
@@ -232,7 +232,7 @@
 			<field name="view_mode">tree,form</field>
 		</record>
 
-		<menuitem name="Competition Lines" id="sale_competition_line_menu" parent="sale.sale_order_menu" action="sale_competition_line_action" sequence="50"/>
+		<menuitem name="Competition Report Lines" id="sale_competition_line_menu" parent="sale.menu_sale_report" action="sale_competition_line_action" sequence="20"/>
 
 	</data>
 </odoo>
