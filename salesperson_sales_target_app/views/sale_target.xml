@@ -35,7 +35,7 @@
 						<button name="confirm" string="Confirm" class="oe_highlight" type="object" states="draft"/>
 						<button name="close" string="Close" class="oe_highlight" type="object" states="open"/>
 						<button name="cancel" string="Cancel" class="oe_highlight" type="object" states="open,closed"/>
-						<button name="set_draft" string="Set to draft" class="oe_highlight" type="object" states="open,closed"/>
+						<button name="set_draft" string="Set to draft" class="oe_highlight" type="object" states="open,closed,cancelled"/>
 						<field name="state" widget="statusbar" statusbar_visible="draft,open,closed"/>
 					</header>
 					<sheet>
