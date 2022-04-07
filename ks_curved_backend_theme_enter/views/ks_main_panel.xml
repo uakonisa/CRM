@@ -1,0 +1,33 @@
+<odoo>
+    <template id="ks_main_panel" inherit_id="web.webclient_bootstrap" name="Main Sidebar Panel">
+        <!-- PWA Manifest -->
+        <xpath expr="//t[@t-call-assets='web.assets_common']" position="before">
+            <link rel="manifest" t-attf-href="/ks_curved_backend_theme_enter/get_manifest"/>
+        </xpath>
+
+        <xpath expr="//t[@t-set='body_classname']" position="after">
+            <!-- Left Sidebar Panel -->
+            <t t-set="ks_vertical_menu_bar"
+                           t-value="request.env['ks.global.config'].ks_get_value_from_scope(['ks_menu_bar'])"/>
+            <!--<div t-if="ks_vertical_menu_bar['ks_menu_bar'] == 'Horizontal'" class="ks_left_sidebar_panel">
+                <div class="ks_app_sidebar">
+                    <div class="inner-sidebar">
+                    </div>
+                </div>
+            </div>-->
+            <!-- Menu bar vertical sub-menus -->
+            <t t-if="ks_vertical_menu_bar['ks_menu_bar'] == 'Vertical'">
+                <div class="ks_vertical_menus d-flex flex-column">
+                    <div class="ks_vertical_menu_header p-4 text-center">
+                        <img alt="alt" title="title" class="ks_vertical_app_icon mb-3" src="#"/>
+                    </div>
+                    <div class="ks_vertical_menu_body px-4 pb-4 h-100">
+                        <ul class="ks_menusections">
+                        </ul>
+                    </div>
+                </div>
+            </t>
+            <div class="ks_right_sidebar_panel"/>
+        </xpath>
+    </template>
+</odoo>
