@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+     <t t-inherit="web_enterprise.HomeMenu" t-inherit-mode="extension" owl="1">
+		<xpath expr="//div[hasclass('o_menu_search')]" position="before">
+            <div class="ks_user_pic">
+                <img class="rounded-circle ks_user_menu_avatar"
+                     t-att-src="'/web/image?model=res.users&amp;field=image_128&amp;id=' + ksAppsMenu.ks_user_id"
+                     alt="Menu">
+                </img>
+                <span class="ks_user_name">
+                    <t t-esc="ksAppsMenu.ks_user_name"/>
+                </span>
+            </div>
+        </xpath>
+
+         <xpath expr="//div[hasclass('o_home_menu_scrollable')]" position="replace">
+            <div class="tab-content ks_appdrawer-tab-content h-100" t-ref="mainContent">
+                <div id="FrequentlyApps" class="tabContent tab-pane ks_appdrawer_panel ks_appdrawer_frequent_div">
+                    <div class="ks_appdrawer_inner_app_div o_apps">
+                        <t t-foreach="ksAppsMenu._getFrequentApps(displayedApps)" t-as="app">
+                            <div class="dropdown-item">
+                                <a
+                                    class="o_app o_menuitem"
+                                    t-att-class="{o_focused: appIndex === app_index}"
+                                    t-att-data-menu-xmlid="app.xmlid"
+                                    t-att-href="app.href || ('#menu_id='+app.id+'&amp;action_id='+app.action)"
+                                    t-key="app.id"
+                                    t-on-click.prevent="_onAppClick(app)"
+                                >
+                                    <div t-if="app.webIconData" class="o_app_icon"
+                                         t-attf-style="background-image: url('{{app.webIconData}}');"
+                                    />
+                                    <div t-else="" class="o_app_icon"
+                                         t-attf-style="background-color: {{app.webIcon.backgroundColor}};"
+                                    >
+                                        <i t-att-class="app.webIcon.iconClass"
+                                           t-attf-style="color: {{app.webIcon.color}};"/>
+                                    </div>
+                                    <div class="o_caption" t-esc="app.label"/>
+                                </a>
+                            </div>
+                        </t>
+                    </div>
+                </div>
+                <div id="AllApps" class="tabContent tab-pane ks_appdrawer_panel ks_appdrawer_main_div active">
+                    <div t-if="displayedApps.length" class="o_apps ks_appdrawer_inner_app_div">
+                        <t t-set="ksFavApps" t-value="ksAppsMenu._getFavApps()"/>
+                        <t t-foreach="displayedApps" t-as="app">
+                            <div class="dropdown-item">
+                                <a
+                                    class="o_app o_menuitem"
+                                    t-att-class="{o_focused: appIndex === app_index}"
+                                    t-att-data-menu-xmlid="app.xmlid"
+                                    t-att-href="app.href || ('#menu_id='+app.id+'&amp;action_id='+app.action)"
+                                    t-key="app.id"
+                                    t-on-click.prevent="_onAppClick(app)"
+                                >
+                                <div t-if="app.webIconData" class="o_app_icon"
+                                     t-attf-style="background-image: url('{{app.webIconData}}');"
+                                />
+                                <div t-else="" class="o_app_icon"
+                                     t-attf-style="background-color: {{app.webIcon.backgroundColor}};"
+                                >
+                                    <i t-att-class="app.webIcon.iconClass"
+                                       t-attf-style="color: {{app.webIcon.color}};"/>
+                                </div>
+                                <div class="o_caption" t-esc="app.label"/>
+                            </a>
+                                <t t-if="ksFavApps.includes(app.id)">
+                                    <span class="options ks_fav_icon ks_rmv_fav d-none"
+                                          t-on-click.prevent="ksAppsMenu._onFavoriteClick(app)">
+                                        <img src="ks_curved_backend_theme_enter/static/src/images/fav_ic.svg" alt=""/>
+                                    </span>
+                                </t>
+                                <t t-if="!ksFavApps.includes(app.id)">
+                                <span class="options ks_fav_icon ks_add_fav d-none"
+                                      t-on-click.prevent="ksAppsMenu._onFavoriteClick(app)">
+                                    <img src="ks_curved_backend_theme_enter/static/src/images/star.svg" alt=""/>
+                                </span>
+                            </t>
+                            </div>
+                        </t>
+
+                     </div>
+                    <div t-if="displayedMenuItems.length" class="o_menuitems">
+                         <a t-foreach="displayedMenuItems" t-as="menu"
+                            role="menuitem"
+                            class="o_menuitem"
+                            t-att-class="{o_focused: menuIndex === menu_index}"
+                            t-att-href="menu.href ? menu.href : ('#menu_id='+menu.id+'&amp;action_id='+menu.action)"
+                            t-key="menu.id"
+                            t-on-click.prevent="_onMenuitemClick(menu)"
+                         >
+                            <span class="o_menuitem_parents"><t t-esc="menu.parents"/>
+                                / </span>
+                             <t t-esc="menu.label"/>
+                        </a>
+                     </div>
+                    <div t-elif="!displayedApps.length" class="o_no_result" role="alert">
+                        No result
+                     </div>
+                </div>
+            </div>
+             <div class="ks-app-drawer-close d-none">
+                <span class="fav_close">
+                    <img class="ks_close_app_drawer" t-on-click.prevent="ksAppsMenu._ksHideFavIcons()"
+                         src="ks_curved_backend_theme_enter/static/src/images/ap_close_ic.png" alt="close"/>
+                </span>
+            </div>
+             <ul class="nav nav-pills apps-drawer-nav pb-3">
+                <li class="nav-item">
+                    <a class="nav-link " data-toggle="pill" href="#FrequentlyApps">
+                        Frequent
+                    </a>
+                </li>
+                 <li class="nav-item">
+                    <a class="nav-link active" data-toggle="pill" href="#AllApps">
+                        All
+                    </a>
+                </li>
+            </ul>
+         </xpath>
+
+         <xpath expr="//div[hasclass('o_home_menu')]" position="inside">
+             <div class="ks_left_panel">
+                 <nav class="o_main_navbar">
+                    <ul class="o_menu_apps"/>
+                     <a class="o_menu_brand" role="button"/>
+                     <ul class="o_menu_sections" role="menu"/>
+                     <ul class="o_menu_systray" role="menu"/>
+                </nav>
+             </div>
+         </xpath>
+    </t>
+</templates>

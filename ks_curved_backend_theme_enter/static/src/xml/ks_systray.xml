@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<templates>
+    <t t-extend="web_studio.SystrayItem">
+        <t t-jquery="img" t-operation="replace">
+        </t>
+        <t t-jquery="a" t-operation="attributes">
+            <attribute name="class" value="ks-toggle-studio" />
+        </t>
+    </t>
+</templates>
