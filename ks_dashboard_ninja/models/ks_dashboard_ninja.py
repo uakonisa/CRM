@@ -11,6 +11,7 @@ from odoo.tools.safe_eval import safe_eval
 import locale
 from dateutil.parser import parse
 
+
 class KsDashboardNinjaBoard(models.Model):
     _name = 'ks_dashboard_ninja.board'
     _description = 'Dashboard Ninja'
@@ -19,7 +20,8 @@ class KsDashboardNinjaBoard(models.Model):
     ks_dashboard_items_ids = fields.One2many('ks_dashboard_ninja.item', 'ks_dashboard_ninja_board_id',
                                              string='Dashboard Items')
     ks_dashboard_menu_name = fields.Char(string="Menu Name")
-    ks_dashboard_top_menu_id = fields.Many2one('ir.ui.menu', domain="['|',('action','=',False),('parent_id','=',False)]",
+    ks_dashboard_top_menu_id = fields.Many2one('ir.ui.menu',
+                                               domain="['|',('action','=',False),('parent_id','=',False)]",
                                                string="Show Under Menu")
     ks_dashboard_client_action_id = fields.Many2one('ir.actions.client')
     ks_dashboard_menu_id = fields.Many2one('ir.ui.menu')
@@ -90,6 +92,9 @@ class KsDashboardNinjaBoard(models.Model):
     ks_dashboard_custom_filters_ids = fields.One2many('ks_dashboard_ninja.board_custom_filters',
                                                       'ks_dashboard_board_id',
                                                       string='Dashboard Custom Filters')
+
+    multi_layouts = fields.Boolean(string='Enable Multi-Dashboard Layouts',
+                                   help='Allow user to have multiple layouts of the same Dashboard')
 
     @api.constrains('ks_dashboard_start_date', 'ks_dashboard_end_date')
     def ks_date_validation(self):
@@ -223,6 +228,7 @@ class KsDashboardNinjaBoard(models.Model):
         ks_dashboard_rec = self.browse(ks_dashboard_id)
         dashboard_data = {
             'name': ks_dashboard_rec.name,
+            'multi_layouts': ks_dashboard_rec.multi_layouts,
             'ks_company_id': self.env.company.id,
             'ks_dashboard_manager': has_group_ks_dashboard_manager,
             'ks_dashboard_list': self.search_read([], ['id', 'name']),
@@ -562,14 +568,29 @@ class KsDashboardNinjaBoard(models.Model):
         for res in rec.ks_list_view_fields:
             ks_list_view_field.append(res.name)
 
+        # val = str(rec.id)
+        # grid_corners = {}
+        # if len(rec.ks_dashboard_ninja_board_id.ks_child_dashboard_ids) > 1:
+        #     for db in rec.ks_dashboard_ninja_board_id.ks_child_dashboard_ids:
+        #         keys_data = json.loads(db.ks_gridstack_config)
+        #         keys_list = keys_data.keys()
+        # else:
+        #     keys_data = json.loads(rec.ks_dashboard_ninja_board_id.ks_child_dashboard_ids.ks_gridstack_config)
+        #     keys_list = keys_data.keys()
+        # if val in keys_list:
+        #     grid_corners = keys_data.get(str(val))
+
         val = str(rec.id)
-        keys_data = json.loads(rec.ks_dashboard_ninja_board_id.ks_child_dashboard_ids.ks_gridstack_config)
+        if rec.ks_dashboard_ninja_board_id.ks_gridstack_config:
+            keys_data = json.loads(rec.ks_dashboard_ninja_board_id.ks_gridstack_config)
+        else:
+            keys_data = json.loads(rec.ks_dashboard_ninja_board_id.ks_child_dashboard_ids[0].ks_gridstack_config)
         keys_list = keys_data.keys()
+        grid_corners = {}
         if val in keys_list:
             grid_corners = keys_data.get(str(val))
 
         item = {
-            'grid_corners': grid_corners,
             'name': rec.name if rec.name else rec.ks_model_id.name if rec.ks_model_id else "Name",
             'ks_background_color': rec.ks_background_color,
             'ks_font_color': rec.ks_font_color,
@@ -659,8 +680,11 @@ class KsDashboardNinjaBoard(models.Model):
             'ks_multiplier_active': rec.ks_multiplier_active,
             'ks_multiplier': rec.ks_multiplier,
             'ks_multiplier_lines': ks_multiplier_lines if ks_multiplier_lines else False,
-            'ks_record_data_limit_visibility': rec.ks_record_data_limit_visibility,
         }
+        if grid_corners:
+            item.update({
+                'grid_corners': grid_corners,
+            })
         return item
 
     def ks_import_item(self, dashboard_id, **kwargs):
@@ -1060,7 +1084,8 @@ class KsDashboardNinjaBoard(models.Model):
                 result = dashboard_id.ks_child_dashboard_ids.browse(int(data['ks_selected_board_id'])).write(
                     {'ks_active': True})
             else:
-                result = dashboard_id.ks_child_dashboard_ids.search([['ks_active', '=', True]]).write({'ks_active': False})
+                result = dashboard_id.ks_child_dashboard_ids.search([['ks_active', '=', True]]).write(
+                    {'ks_active': False})
         return result
 
     def ks_prepare_dashboard_domain(self):
@@ -1148,3 +1173,5 @@ class KsDashboardNinjaBoard(models.Model):
                             rec.ks_domain_field_id.name]['selection']
                 }
         return data
+
+

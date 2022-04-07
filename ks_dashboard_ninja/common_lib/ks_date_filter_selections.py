@@ -38,7 +38,7 @@ def ks_get_date(ks_date_filter_selection, self, type):
 
 
 # Last Specific Days Ranges : 7, 30, 90, 365
-def ks_date_series_l(ks_date_selection, timezone, type):
+def ks_date_series_l(ks_date_selection, timezone, type, self=None):
     ks_date_data = {}
     date_filter_options = {
         'day': 0,

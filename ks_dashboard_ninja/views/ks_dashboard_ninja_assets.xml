@@ -14,6 +14,7 @@
             <script type="text/javascript" src="/ks_dashboard_ninja/static/src/js/ks_to_do_dashboard.js"/>
             <script type="text/javascript" src="/ks_dashboard_ninja/static/src/js/ks_filter_props.js"/>
             <script type="text/javascript" src="/ks_dashboard_ninja/static/src/js/ks_color_picker.js"/>
+            <script type="text/javascript" src="/ks_dashboard_ninja/static/src/js/ks_create_dashboard_dialog.js"/>
             <script type="text/javascript" src="/ks_dashboard_ninja/static/src/js/ks_dashboard_ninja_item_preview.js"/>
             <script type="text/javascript" src="/ks_dashboard_ninja/static/src/js/ks_image_basic_widget.js"/>
             <script type="text/javascript" src="/ks_dashboard_ninja/static/src/js/ks_dashboard_item_theme.js"/>
@@ -38,6 +39,16 @@
                     src="/ks_dashboard_ninja/static/src/js/ks_dashboard_ninja_list_view_preview.js"/>
             <script type="text/javascript"
                     src="/ks_dashboard_ninja/static/src/js/ks_to_do_preview.js"/>
+
+            <script type="text/javascript"
+                    src="/ks_dashboard_ninja/static/src/js/ks_reload_menus_enterprise.js"/>
+
+            <script type="text/javascript"
+                    src="/ks_dashboard_ninja/static/src/js/ks_list_renderer.js"/>
+
+            <script type="text/javascript"
+                    src="/ks_dashboard_ninja/static/src/js/ks_form_renderer.js"/>
+
         </xpath>
     </template>
 </odoo>

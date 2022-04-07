@@ -19,3 +19,5 @@ access_ir_actions_act_window,ir.actions.act_window,base.model_ir_actions_act_win
 access_ir_actions_client,ir.actions.client,base.model_ir_actions_client,,1,0,0,0
 access_ir_ui_menu,ir.ui.menu,base.model_ir_ui_menu,,1,1,0,0
 access_ks_dashboard_ninja_ks_grid_per_company,ks_dashboard_ninja.ks_grid_per_company,model_ks_dashboard_ninja_ks_grid_per_company,,1,1,1,1
+
+access_ks_dashboard_wizard,access_ks_dashboard_wizard,model_ks_dashboard_wizard,,1,1,1,1
