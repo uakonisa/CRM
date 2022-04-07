@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<data>
+		<record model="ir.ui.view" id="view_employee_inherit_form">
+			<field name="name">employee.hr..inherit</field>
+			<field name="model">hr.employee</field>
+			<field name="inherit_id" ref="hr.view_employee_form"/>
+			<field name="arch" type="xml">
+				<xpath expr="//notebook/page[@name='hr_settings']" position="after">
+					<page name="saletarget" string="Sales Target">
+						<field name="product_sale_ids" nolabel="1">
+							<tree editable="bottom">
+								<field name="product_id" string="Product" />
+								<field name="target_quantity" />
+								<field name="threshold_quantity" />
+							</tree>
+						</field>
+					</page>
+				</xpath>
+			</field>
+		</record>
+
+		<record id="view_saletarget_by_salesperson" model="ir.ui.view">
+			<field name="name">salestarget_by_salesperson</field>
+			<field name="model">saletaget.batch.salesperson</field>
+			<field name="arch" type="xml">
+				<form string="Sales Target by Staff">
+					<group>
+						<span colspan="4" nolabel="1">This wizard will generate sales target for all selected staff(s) based on the dates specified.</span>
+					</group>
+
+					<group colspan="4" >
+						<separator string="Staffs" colspan="4"/>
+						<newline/>
+						<field name="staff_ids" nolabel="1"/>
+					</group>
+					<footer>
+						<button icon="fa-cogs" string="Generate" name="compute_saletarget" type="object" class="oe_highlight"/>
+						<button string="Cancel" class="btn btn-secondary" special="cancel"/>
+					</footer>
+				</form>
+			</field>
+		</record>
+
+		<record id="action_saletarget_by_salesperson" model="ir.actions.act_window">
+			<field name="name">Generate Sales Target</field>
+			<field name="res_model">saletaget.batch.salesperson</field>
+			<field name="view_mode">tree,form</field>
+			<field name="view_id" ref="view_saletarget_by_salesperson"/>
+			<field name="target">new</field>
+		</record>
+
+		<record id="sale_target_batch_tree" model="ir.ui.view">
+			<field name="name">sale;target.batch.tree</field>
+			<field name="model">saletarget.batch</field>
+			<field name="arch" type="xml">
+				<tree string="Sale Target Batches" sample="1">
+					<field name="name"/>
+					<field name="date_start"/>
+					<field name="date_end"/>
+					<field name="month" />
+					<field name="year" />
+					<field name="state"/>
+				</tree>
+			</field>
+		</record>
+
+		<record id="sale_target_batch_form" model="ir.ui.view">
+			<field name="name">sale.target.batch.form</field>
+			<field name="model">saletarget.batch</field>
+			<field name="arch" type="xml">
+				<form string="Sale Target Batches">
+					<header>
+						<button name="confirm_batch" string="Confirm" class="oe_highlight" type="object" states="draft"/>
+						<button name="close_batch" string="Close" class="oe_highlight" type="object" states="open"/>
+						<button name="cancel_batch" string="Cancel" class="oe_highlight" type="object" states="open,closed"/>
+						<button name="set_draft_batch" string="Set to draft" class="oe_highlight" type="object" states="open,closed,cancelled"/>
+						<field name="state" widget="statusbar" statusbar_visible="draft,open,closed"/>
+					</header>
+					<sheet>
+						<div class="oe_button_box" name="button_box">
+							<button name="action_open_saletarget" class="oe_stat_button" icon="fa-book" type="object" help="Generated Sales Target" attrs="{'invisible': [('saletarget_count', '=', 0)]}">
+								<div class="o_field_widget o_stat_info">
+									<span class="o_stat_value"><field name="saletarget_count"/></span>
+									<span class="o_stat_text">Sales Target</span>
+								</div>
+							</button>
+						</div>
+						<label for="name" class="oe_edit_only"/>
+						<h1>
+							<field name="name" attrs="{'readonly':[('state','!=','draft')]}" />
+						</h1>
+						<group>
+							<group>
+								<field name="month" string="Month" attrs="{'readonly':[('state','!=','draft')]}" />
+								<label for="date_start" string="Period" />
+								<div class="o_row">
+									<field name="date_start" class="oe_inline" attrs="{'readonly':[('state','!=','draft')]}"/> - <field name="date_end" class="oe_inline" attrs="{'readonly':[('state','!=','draft')]}"/>
+								</div>
+							</group>
+							<group>
+								<field name="year" attrs="{'readonly':[('state','!=','draft')]}"/>
+							</group>
+						</group>
+						<button name="%(action_saletarget_by_salesperson)d" type="action" states="draft" string="Generate Sales Target" class="oe_highlight"/>
+						<separator string="Sale Target(s)"/>
+						<notebook>
+							<page string="Sales Target">
+								<field name="target_ids" readonly="1" />
+							</page>
+						</notebook>
+					</sheet>
+				</form>
+			</field>
+		</record>
+
+		<record id="action_sale_target_batch" model="ir.actions.act_window">
+			<field name="name">Sale Target Batches</field>
+			<field name="res_model">saletarget.batch</field>
+			<field name="view_mode">tree,form</field>
+		</record>
+
+		<menuitem name="Sales Target Batches" id="sale_target_batches_menu" parent="sale.sale_menu_root" action="action_sale_target_batch"/>
+	</data>
+</odoo>

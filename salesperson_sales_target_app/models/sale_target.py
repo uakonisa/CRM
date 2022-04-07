@@ -53,6 +53,7 @@ class SaleTarget(models.Model):
 	responsible_salesperson_id = fields.Many2one('res.users',string="Responsible Salesperson")
 	target_line_ids = fields.One2many('targetline.targetline','reverse_id')
 	target_history_ids = fields.One2many('targetline.history', 'history_id')
+	saletarget_batch_id = fields.Many2one('saletarget.batch', 'Batch Name')
 	state = fields.Selection([
 			('draft','Draft'),
 			('open', 'Open'),
@@ -69,8 +70,9 @@ class SaleTarget(models.Model):
 		return result
 
 	def unlink(self):
-		if self.state != 'draft':
-			raise UserError(_('You can only delete an sales target in draft state.'))
+		for rec in self:
+			if rec.state != 'draft':
+				raise UserError(_('You can only delete an sales target in draft state.'))
 		return super(SaleTarget, self).unlink()
 
 	def confirm(self):

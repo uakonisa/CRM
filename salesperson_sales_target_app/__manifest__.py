@@ -16,6 +16,7 @@
         'data/mail_template.xml',
         'views/sale_target.xml',
         'views/sale_target_line.xml',
+        'views/sale_target_batch.xml',
     ],
     'qweb' : [],
     'demo': [],
