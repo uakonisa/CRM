@@ -102,20 +102,19 @@ class SaleCompetition(models.Model):
 							sp_lines = lines.filtered(lambda x:x.sales_person_id.id == record)
 							so_lines = self.env['targetline.targetline'].search([('reverse_id','in',[rec.id for rec in sp_lines])])
 							achieve_qty = 0
-							target_qty = 0
 							pool = False
+							line_count = 0
 							for items in so_lines:
-								achieve_qty += items.achieve_quantity
-								target_qty += items.target_quantity
-							if target_qty:
-								percent = round((achieve_qty * 100) / target_qty)
+								line_count += 1
+								achieve_qty += items.achieve_perc
+								percent = achieve_qty / line_count
 								pool = self.env['sale.pool'].search([('percentage_in', '<=', percent),('percentage_out', '>=', percent)])
 						self.env['competition.lines'].create({
 							'competition_id': self.id, 'date': date,
 							'salesperson': self.env['hr.employee'].search([('id','=',record)]).id,
 							'achieve_quantity': achieve_qty,
-							'target_quantity': target_qty,
 							'overall_percent': percent,
+							# 'total_point':
 							'pool_id': pool[0].id if len(pool) > 1 else pool.id,
 							'no_of_wins': 1 if pool else False})
 
@@ -131,6 +130,7 @@ class LinesCompetition(models.Model):
 	staff_job = fields.Many2one(related='salesperson.job_id')
 	pool_id = fields.Many2one('sale.pool')
 	overall_percent = fields.Integer('Overall %')
+	total_point = fields.Integer('Total Points')
 	achieve_quantity = fields.Integer('Achieve Quantity')
 	target_quantity = fields.Integer('Target Quantity')
 	no_of_wins = fields.Integer('No. of wins')
