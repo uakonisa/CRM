@@ -10,6 +10,7 @@ class InheritProduct(models.Model):
 
 	points = fields.Float(string='Points on Target Achievement')
 	incentive_pay = fields.Float(string='Incentive Pay')
+	is_achievement = fields.Boolean(default=False)
 	saletarget_config_ids = fields.One2many('saletarget.config', 'target_id')
 
 
@@ -156,21 +157,31 @@ class TargetLine(models.Model):
 	start_date = fields.Date('Start date')
 	end_date = fields.Date('End date')
 	product_id = fields.Many2one('product.product', string="Product", required=True)
-	target_quantity = fields.Integer(string="Target Quantity", required=True)
-	threshold_quantity = fields.Integer(string="Threshold Quantity", required=True)
-	achieve_quantity = fields.Integer(string="Achieve Quantity")
-	difference = fields.Integer(string='Difference', compute="_get_difference")
-	returned_quantity = fields.Integer(string='Returned Quantity')
+	target_quantity = fields.Integer(string="Target", required=True)
+	threshold_quantity = fields.Integer(string="Threshold", required=True)
+	achieve_quantity = fields.Integer(string="Submitted")
+	booked_quantity = fields.Integer(string="Booked")
+	difference = fields.Integer(string='Variance', compute="_get_difference")
+	returned_quantity = fields.Integer(string='Returned')
 	incentive_unit_product = fields.Float(related='product_id.incentive_pay', string='Incentive/Unit Product', store=True)
-	achieve_perc = fields.Integer(string="Achieve Percentage", compute="_get_percentage",store=True)
+	achieve_perc = fields.Integer(string="Submission %", compute="_get_percentage",store=True)
+	booked_percentage = fields.Integer(string="Booked %", compute="_get_booked_percentage", store=True)
 	incentive_pay = fields.Float(string='Incentives Pay Out', compute='_get_incentive_amount', store=True)
 	points = fields.Float(string='Points', compute='_get_incentive_amount', store=True)
-	points_per_products = fields.Float(related='product_id.points', string='Points/Unit Product', store=True)
+	points_per_products = fields.Float(related='product_id.points', string='Points/Unit', store=True)
 
 	@api.depends('target_quantity','achieve_quantity','returned_quantity')
 	def _get_difference(self):
 		for lines in self:
 			lines.difference = (lines.target_quantity - lines.achieve_quantity) + lines.returned_quantity
+
+	@api.depends('target_quantity', 'booked_quantity')
+	def _get_booked_percentage(self):
+		for temp in self:
+			try:
+				temp.booked_percentage = temp.booked_quantity * 100/temp.target_quantity
+			except ZeroDivisionError:
+				return temp.booked_percentage
 
 	@api.depends('target_quantity','achieve_quantity')
 	def _get_percentage(self):

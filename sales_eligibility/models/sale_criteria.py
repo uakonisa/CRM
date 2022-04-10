@@ -83,7 +83,9 @@ class SaleCompetition(models.Model):
 		return result
 
 	def button_get_report(self):
-		self.competition_line_ids = False
+		lines = self.env['competition.lines'].search([('competition_id','=',self.id)])
+		for rec in lines:
+			rec.unlink()
 		if self.report_type == 'daily':
 			d1 = self.date_start
 			d2 = self.date_end
@@ -104,18 +106,29 @@ class SaleCompetition(models.Model):
 							achieve_qty = 0
 							pool = False
 							line_count = 0
+							hit_threshold = 0
+							line_point = 0
+							exclude_from_achievement = 0
 							for items in so_lines:
+								if items.product_id.is_achievement == True:
+									if items.achieve_quantity >= items.threshold_quantity:
+										hit_threshold +=1
+								else:
+									exclude_from_achievement +=1
 								line_count += 1
 								achieve_qty += items.achieve_perc
+								line_point += items.points
 								percent = achieve_qty / line_count
 								pool = self.env['sale.pool'].search([('percentage_in', '<=', percent),('percentage_out', '>=', percent)])
-						self.env['competition.lines'].create({
-							'competition_id': self.id, 'date': date,
-							'salesperson': self.env['hr.employee'].search([('id','=',record)]).id,
-							'achieve_quantity': achieve_qty,
-							'overall_percent': percent,
-							'pool_id': pool[0].id if len(pool) > 1 else pool.id,
-							'no_of_wins': 1 if pool else False})
+						if hit_threshold == (line_count - exclude_from_achievement):
+							self.env['competition.lines'].create({
+								'competition_id': self.id, 'date': date,
+								'salesperson': self.env['hr.employee'].search([('id','=',record)]).id,
+								'achieve_quantity': achieve_qty,
+								'overall_percent': percent,
+								'total_point':line_point,
+								'pool_id': pool[0].id if len(pool) > 1 else pool.id,
+								'no_of_wins': 1 if pool else False})
 
 
 class LinesCompetition(models.Model):
@@ -129,6 +142,7 @@ class LinesCompetition(models.Model):
 	staff_job = fields.Many2one(related='salesperson.job_id')
 	pool_id = fields.Many2one('sale.pool')
 	overall_percent = fields.Integer('Overall %')
+	total_point = fields.Integer('Total Points')
 	achieve_quantity = fields.Integer('Achieve Quantity')
 	target_quantity = fields.Integer('Target Quantity')
 	no_of_wins = fields.Integer('No. of wins')

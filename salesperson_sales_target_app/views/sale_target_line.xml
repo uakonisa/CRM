@@ -15,7 +15,7 @@
 								<field name="supervisor_id" string="Manager" readonly="1"/>
 								<field name="product_id"/>
 								<field name="start_date" />
-								<field name="start_date" />
+								<field name="end_date" />
 								<field name="points_per_products" />
 								<field name="points" />
 							</group>
@@ -25,9 +25,11 @@
 								<field name="achieve_quantity"/>
 								<field name="returned_quantity"/>
 								<field name="difference"/>
-								<field name="incentive_unit_product" />
+								<field name="booked_quantity" />
+								<!--<field name="incentive_unit_product" />-->
 								<field name="achieve_perc"  widget="progressbar"/>
-								<field name="incentive_pay" />
+								<field name="booked_percentage"  widget="progressbar"/>
+								<!--<field name="incentive_pay" />-->
 							</group>
 						</group>
 					</sheet>
@@ -52,11 +54,13 @@
 					<field name="achieve_quantity"/>
 					<field name="returned_quantity"/>
 					<field name="difference"/>
-					<field name="incentive_unit_product" />
-					<field name="incentive_pay" />
+					<field name="booked_quantity" />
+					<!--					<field name="incentive_unit_product" />
+                                        <field name="incentive_pay" />-->
 					<field name="points_per_products" />
 					<field name="points" />
 					<field name="achieve_perc"  widget="progressbar"/>
+					<field name="booked_percentage"  widget="progressbar"/>
 				</tree>
 			</field>
 		</record>

@@ -1,6 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 	<data>
+		<record model="ir.ui.view" id="view_product_template_inh_sit_crm">
+			<field name="name">template.product.inherit.crm</field>
+			<field name="model">product.template</field>
+			<field name="inherit_id" ref="product.product_template_form_view"/>
+			<field name="arch" type="xml">
+				<xpath expr="//div[@name='options']" position="inside">
+					<div>
+						<field name="is_achievement"/>
+						<label for="is_achievement"/>
+					</div>
+				</xpath>
+			</field>
+		</record>
 		<record model="ir.ui.view" id="view_product_template_inh">
 			<field name="name">template.product.inherit</field>
 			<field name="model">product.template</field>
@@ -50,8 +63,6 @@
 								<field name="sales_staff_id" attrs="{'readonly':[('state','!=','draft')]}" string="Staff ID"/>
 								<field name="manager_id" readonly="1" string="Sales Officer"/>
 								<field name="supervisor_id" readonly="1" string="Manager"/>
-								<field name="start_date" attrs="{'readonly':[('state','!=','draft')],'required':[('state', '=', 'draft')]}"/>
-								<field name="end_date" attrs="{'readonly':[('state','!=','draft')],'required':[('state', '=', 'draft')]}"/>
 								<!--<field name="target_achieve" attrs="{'readonly':[('state','!=','draft')],'invisible':[('achieve','=',0)]}"/>-->
 							</group>
 							<group>
@@ -59,6 +70,8 @@
 								<field name="difference" readonly="1"/>
 								<field name="achieve" readonly="1"/>
 								<field name="average" readonly="1"/>-->
+								<field name="start_date" attrs="{'readonly':[('state','!=','draft')],'required':[('state', '=', 'draft')]}"/>
+								<field name="end_date" attrs="{'readonly':[('state','!=','draft')],'required':[('state', '=', 'draft')]}"/>
 								<field name="achieve_percentage" widget="progressbar" readonly="1"/>
 								<field name="average_percentage" widget="progressbar" readonly="1"/>
 								<field name="total_points" string="Total Points" readonly="1"/>
@@ -81,11 +94,13 @@
 										<field name="achieve_quantity"/>
 										<field name="returned_quantity"/>
 										<field name="difference"/>
-										<field name="incentive_unit_product" />
-										<field name="incentive_pay" />
+										<field name="booked_quantity"/>
+										<!--<field name="incentive_unit_product" />-->
+										<!--<field name="incentive_pay" />-->
 										<field name="points_per_products" />
 										<field name="points" />
-										<field name="achieve_perc"  widget="progressbar"/>
+										<field name="achieve_perc" widget="progressbar"/>
+										<field name="booked_percentage" widget="progressbar"/>
 									</tree>
 								</field>
 							</page>
@@ -196,6 +211,8 @@
 					<field name="target"/>
 					<group expand="0" string="Group By">
 						<filter string="Salesperson" name="sales_person_id" domain="[]" context="{'group_by': 'sales_person_id'}"/>
+						<filter string="Batch" name="saletarget_batch_id" domain="[]" context="{'group_by': 'saletarget_batch_id'}"/>
+						<filter string="Date" name="start_date" domain="[]" context="{'group_by': 'start_date'}"/>
 					</group>
 				</search>
 			</field>

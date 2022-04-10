@@ -147,6 +147,7 @@
 								<field name="staff_id"/>
 								<field name="salesperson"/>
 								<field name="staff_job"/>
+								<field name="total_point"/>
 								<!--<field name="achieve_quantity"/>
 								<field name="target_quantity"/>
 								--><field name="overall_percent" string="Overall Ratio"/>
@@ -198,6 +199,7 @@
 							<group>
 								<!--<field name="achieve_quantity"/>
 								<field name="target_quantity"/>-->
+								<field name="total_point"/>
 								<field name="overall_percent" string="Overall Ratio"/>
 								<field name="pool_id"/>
 								<field name="no_of_wins"/>
@@ -219,6 +221,7 @@
 					<field name="staff_job"/>
 				<!--	<field name="achieve_quantity"/>
 					<field name="target_quantity"/>-->
+					<field name="total_point"/>
 					<field name="overall_percent" string="Overall Ration"/>
 					<field name="pool_id"/>
 					<field name="no_of_wins"/>
