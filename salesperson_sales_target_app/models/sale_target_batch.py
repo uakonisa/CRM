@@ -126,15 +126,35 @@ class SalesTargetByStaff(models.TransientModel):
 		saletargets = self.env['saletarget.saletarget']
 		for emp in staffs:
 			target_product = []
+			if not emp.product_sale_ids:
+				raise ValidationError(
+					_("Before generating sale target, you must have to define sale target for staff %s") % (emp.name))
 			for sale_target in emp.product_sale_ids:
-				if not sale_target:
-					raise ValidationError(_("Before generating sale target, you must have to define sale target for staff %s")%(emp.name))
 				target_product.append((0, 0, {'product_id': sale_target.product_id.id, 'target_quantity': sale_target.target_quantity,'threshold_quantity': sale_target.threshold_quantity}))
 			count = -1
 			for rec in range(saletarget_run.difference_days):
 				count += 1
-				saletargets.create({'sales_person_id': emp.id,
-									'start_date': saletarget_run.date_start + timedelta(days=count),
-									'end_date':saletarget_run.date_start + timedelta(days=count),
-									'saletarget_batch_id':saletarget_run.id,
-									'target_line_ids': target_product})
+				is_official_day = emp.resource_calendar_id.check_day_is_official_day(saletarget_run.date_start + timedelta(days=count))
+				if is_official_day == True:
+					saletargets.create({'sales_person_id': emp.id,
+										'start_date': saletarget_run.date_start + timedelta(days=count),
+										'end_date':saletarget_run.date_start + timedelta(days=count),
+										'saletarget_batch_id':saletarget_run.id,
+										'target_line_ids': target_product})
+
+
+class InheritResource(models.Model):
+	_inherit = 'resource.calendar'
+
+	@api.model
+	def check_day_is_official_day(self, day):
+		# day = day is datetime and day or datetime.strptime(day, "%Y-%m-%d")
+		day = type(day) == str and datetime.strptime(day, "%Y-%m-%d") or day
+		week_day = day.weekday()
+		week_day = week_day and week_day or '0'
+		resource_calendar_attendance = self.env['resource.calendar.attendance'].search(
+			[('dayofweek', '=', week_day), ('calendar_id', '=', self.id)])
+		if resource_calendar_attendance:
+			return True
+		else:
+			return False
