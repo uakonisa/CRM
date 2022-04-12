@@ -50,7 +50,8 @@ class SaleTarget(models.Model):
 	total_points = fields.Float(string="Total Points", compute="_get_points", store=True, readonly=True)
 	achieve = fields.Integer(string="Achieve", compute="_compute_sales_target", store=True, readonly=True)
 	achieve_percentage = fields.Integer(string="Achieve Percentage",compute="_get_achieve_percentage", readonly=True)
-	average_percentage = fields.Integer(string="Overall Achievement", compute="_get_average_percentage", readonly=True)
+	average_percentage = fields.Integer(string="Overall Submission %", compute="_get_average_percentage", readonly=True)
+	booked_percentage = fields.Integer(string="Overall Booked %", compute="_get_booked_avg_percentage", readonly=True)
 	responsible_salesperson_id = fields.Many2one('res.users',string="Responsible Salesperson")
 	target_line_ids = fields.One2many('targetline.targetline','reverse_id')
 	target_history_ids = fields.One2many('targetline.history', 'history_id')
@@ -122,6 +123,14 @@ class SaleTarget(models.Model):
 				rec.average_percentage = sum([line.achieve_perc for line in rec.target_line_ids])/len(rec.target_line_ids)
 			except ZeroDivisionError:
 				return rec.average_percentage
+
+	@api.depends('target_line_ids')
+	def _get_booked_avg_percentage(self):
+		for rec in self:
+			try:
+				rec.booked_percentage = sum([line.booked_percentage for line in rec.target_line_ids])/len(rec.target_line_ids)
+			except ZeroDivisionError:
+				return rec.booked_percentage
 
 	@api.depends('achieve','target','target_line_ids')
 	def _get_difference(self):
