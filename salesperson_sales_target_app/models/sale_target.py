@@ -169,12 +169,14 @@ class TargetLine(models.Model):
 	target_quantity = fields.Integer(string="Target", required=True)
 	threshold_quantity = fields.Integer(string="Threshold", required=True)
 	achieve_quantity = fields.Integer(string="Submitted")
+	projected_quantity = fields.Integer(string="Projected")
 	booked_quantity = fields.Integer(string="Booked")
 	difference = fields.Integer(string='Variance', compute="_get_difference")
 	returned_quantity = fields.Integer(string='Returned')
 	incentive_unit_product = fields.Float(related='product_id.incentive_pay', string='Incentive/Unit Product', store=True)
 	achieve_perc = fields.Integer(string="Submission %", compute="_get_percentage",store=True)
 	booked_percentage = fields.Integer(string="Booked %", compute="_get_booked_percentage", store=True)
+	projected_percentage = fields.Integer(string="Projected %", compute="_get_projected_percentage", store=True)
 	incentive_pay = fields.Float(string='Incentives Pay Out', compute='_get_incentive_amount', store=True)
 	points = fields.Float(string='Points', compute='_get_incentive_amount', store=True)
 	points_per_products = fields.Float(related='product_id.points', string='Points/Unit', store=True)
@@ -191,6 +193,14 @@ class TargetLine(models.Model):
 				temp.booked_percentage = temp.booked_quantity * 100/temp.target_quantity
 			except ZeroDivisionError:
 				return temp.booked_percentage
+
+	@api.depends('projected_quantity', 'booked_quantity')
+	def _get_projected_percentage(self):
+		for temp in self:
+			try:
+				temp.projected_percentage = temp.booked_quantity * 100/temp.projected_quantity
+			except ZeroDivisionError:
+				return temp.projected_percentage
 
 	@api.depends('target_quantity','achieve_quantity')
 	def _get_percentage(self):

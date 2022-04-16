@@ -22,6 +22,7 @@
 							<group>
 								<field name="target_quantity"/>
 								<field name="threshold_quantity"/>
+								<field name="projected_quantity"/>
 								<field name="achieve_quantity"/>
 								<field name="returned_quantity"/>
 								<field name="difference"/>
@@ -29,6 +30,7 @@
 								<!--<field name="incentive_unit_product" />-->
 								<field name="achieve_perc"  widget="progressbar"/>
 								<field name="booked_percentage"  widget="progressbar"/>
+								<field name="projected_percentage"  widget="progressbar"/>
 								<!--<field name="incentive_pay" />-->
 							</group>
 						</group>
@@ -51,6 +53,7 @@
 					<field name="product_id"/>
 					<field name="target_quantity"/>
 					<field name="threshold_quantity"/>
+					<field name="projected_quantity"/>
 					<field name="achieve_quantity"/>
 					<field name="returned_quantity"/>
 					<field name="difference"/>
@@ -61,6 +64,7 @@
 					<field name="points" />
 					<field name="achieve_perc"  widget="progressbar"/>
 					<field name="booked_percentage"  widget="progressbar"/>
+					<field name="projected_percentage"  widget="progressbar"/>
 				</tree>
 			</field>
 		</record>
